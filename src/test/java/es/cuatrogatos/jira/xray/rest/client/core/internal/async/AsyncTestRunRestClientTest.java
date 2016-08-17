@@ -43,6 +43,12 @@ public class AsyncTestRunRestClientTest {
 
     }
 
+	@Test
+	public void testGetTestRun2() throws Exception {
+		TestRun testRun = restClient.getTestRunClient().getTestRun(1973L).claim();
+		assertEquals(testRun.getStatus().name(), "TODO");
+	}
+    
     @Test
     public void testUpdateTestRun() throws Exception {
 

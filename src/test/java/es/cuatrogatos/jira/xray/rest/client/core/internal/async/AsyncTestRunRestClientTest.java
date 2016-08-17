@@ -39,8 +39,14 @@ public class AsyncTestRunRestClientTest {
     @Test
     public void testGetTestRun1() throws Exception {
        TestRun testRun=restClient.getTestRunClient().getTestRun("DYPIT-1728","DYPIT-1608").claim();
-        assertEquals(testRun.getStatus().name(),"ABORTED");
+       assertEquals(testRun.getStatus().name(),"ABORTED");
 
+    }
+    
+    @Test
+    public void testGetTestRun2() throws Exception {
+       TestRun testRun=restClient.getTestRunClient().getTestRun(1973L).claim();
+       assertEquals(testRun.getStatus().name(),"TODO");
     }
 
     @Test

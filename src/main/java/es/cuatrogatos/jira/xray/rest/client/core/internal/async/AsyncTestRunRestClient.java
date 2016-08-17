@@ -6,7 +6,9 @@ import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
 import com.atlassian.util.concurrent.Promise;
 import es.cuatrogatos.jira.xray.rest.client.api.TestRunRestClient;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.*;
+import es.cuatrogatos.jira.xray.rest.client.core.internal.json.StatusJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.TestRunJsonParser;
+import jdk.nashorn.internal.parser.JSONParser;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
@@ -18,6 +20,7 @@ import java.net.URISyntaxException;
 public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient implements TestRunRestClient {
     private URI baseUri;
     private final TestRunJsonParser testRunParser=new TestRunJsonParser();
+    private final StatusJsonParser  statusParser=new StatusJsonParser();
 
     public AsyncTestRunRestClient(URI serverUri, DisposableHttpClient httpClient){
         super(httpClient);
@@ -36,15 +39,25 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
     }
 
     public Promise<TestRun> getTestRun(Long testRunId) {
-        throw new IllegalArgumentException("NOT IMPLEMENTED YET");
+        UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
+        uriBuilder.path("testrun").path("{id}");
+        return this.getAndParse(uriBuilder.build(testRunId),this.testRunParser);
     }
 
     public Promise<TestRun> updateTestRun(TestRun testRunInput) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
 
+    /**
+     * Rest-API call to the /{testrun_id}/status return not json response so crash
+     * @BUG-ID: http://jira.xpand-addons.com/browse/XRAY-964.
+     * @param testRunId
+     * @return Status from the test run
+     */
     public Promise<TestRun.Status> getStatus(Long testRunId) {
-        throw new IllegalArgumentException("NOT IMPLEMENTED YET");
+        UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
+        uriBuilder.path("testrun").path("{id}").path("/status/");
+        return this.getAndParse(uriBuilder.build(testRunId),statusParser);
     }
 
     public Promise<TestRun.Status> updateStatus(Long testRunId, TestRun.Status statusInput) {

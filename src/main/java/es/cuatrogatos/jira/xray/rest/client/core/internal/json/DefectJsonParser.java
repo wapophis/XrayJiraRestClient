@@ -19,7 +19,7 @@ public class DefectJsonParser implements JsonObjectParser<Defect> {
     public static final String DEFECT_KEY_STATUS="status";
 
     public Defect parse(JSONObject jsonObject) throws JSONException {
-        jsonObject.put("self",""); // TODO GET THE SELF URI FOR NAVIGATION
+        jsonObject.put("self",""); // TODO: GET THE SELF URI FOR NAVIGATION
         Long id=jsonObject.getLong(DEFECT_KEY_ID);
         String key=jsonObject.getString(DEFECT_KEY);
         String summary=jsonObject.getString(DEFECT_KEY_SUMMARY);

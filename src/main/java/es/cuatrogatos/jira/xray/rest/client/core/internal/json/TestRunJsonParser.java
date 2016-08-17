@@ -18,7 +18,6 @@ import java.util.Date;
  * Created by lucho on 12/08/16.
  */
 public class TestRunJsonParser implements JsonObjectParser<TestRun> {
-    private static String DEFECTS_KEY="defects";
     private final static DefectJsonParser defectParser=new DefectJsonParser();
     public TestRunJsonParser(){
     }
@@ -26,24 +25,28 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
     public TestRun parse(JSONObject jsonObject) throws JSONException {
         jsonObject.put("self",""); // TODO: ADD URI.
         URI selfUri = JsonParseUtil.getSelfUri(jsonObject);
-        String key =" THERE IS NO KEY FOR TEST RUN AT X-RAY DIRECT REST API";
+        String key =" THERE IS NO KEY FOR TEST RUN AT X-RAY DIRECT REST API"; // TODO: GET THE ISSUE KEY
         Long id = Long.valueOf(jsonObject.getLong("id"));
         TestRun.Status status=getStatus(jsonObject);
         GenericJsonArrayParser arrayParser=new GenericJsonArrayParser(defectParser);
-        Iterable<Defect> defects=arrayParser.parse(jsonObject.getJSONArray(DEFECTS_KEY));
+        Iterable<Defect> defects=arrayParser.parse(jsonObject.getJSONArray("defects"));
         Iterable<Evidence> evidences=null;
         Iterable<Comment> comments=null;
 
         Date startedOn= null;
+        Date finishedOn=null;
         try {
             startedOn = new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("startedOn"));
+            finishedOn= new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("finishedOn"));
         } catch (ParseException e) {
             e.printStackTrace();
             throw new JSONException(e.getMessage());
         }
-        String executedBy=jsonObject.getString("executedBy");
 
-        TestRun res=new TestRun(JsonParseUtil.getSelfUri(jsonObject),key,id,status,startedOn,executedBy,defects,evidences,comments);
+        String executedBy=jsonObject.getString("executedBy");
+        String assignee=jsonObject.getString("assignee");
+
+        TestRun res=new TestRun(selfUri,key,id,status,startedOn,finishedOn,assignee,executedBy,defects,evidences,comments);
         return res;
     }
 

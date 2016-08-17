@@ -45,7 +45,7 @@ public class TestRunJsonParserTest {
             "      \"fileURL\": \"http://lenovo-pc:2990/jira/plugins/servlet/raven/attachment/313/stuff.txt\"\n" +
             "    },\n" +
             "    {\n" +
-            "      \"id\": 314,\n" +
+            "      \"id\": 314,\n" +""+
             "      \"fileName\": \"stuff2.txt\",\n" +
             "      \"fileSize\": \"0,0 kB\",\n" +
             "      \"created\": \"Yesterday 4:22 PM\",\n" +

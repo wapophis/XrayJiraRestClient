@@ -1,18 +1,21 @@
 package es.cuatrogatos.jira.xray.rest.client.core.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.BasicIssue;
-import com.atlassian.jira.rest.client.internal.json.GenericJsonArrayParser;
-import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.*;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import com.atlassian.jira.rest.client.internal.json.GenericJsonArrayParser;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
+import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
+
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Comment;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Evidence;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
 
 /**
  * Created by lucho on 12/08/16.
@@ -33,18 +36,28 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
         Iterable<Evidence> evidences=null;
         Iterable<Comment> comments=null;
 
-        Date startedOn= null;
-        Date finishedOn=null;
+        Date startedOn = null;
+        Date finishedOn = null;
+        String executedBy = null;
+        String assignee = null;
+        
         try {
-            startedOn = new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("startedOn"));
-            finishedOn= new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("finishedOn"));
+            if (!jsonObject.isNull("startedOn")) {
+                startedOn = new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("startedOn"));
+            }
+            if (!jsonObject.isNull("finishedOn")) {
+                finishedOn= new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("finishedOn"));
+            }
+            if (!jsonObject.isNull("executedBy")) {
+                executedBy = jsonObject.getString("executedBy");
+            }
+            if (!jsonObject.isNull("assignee")) {
+                assignee = jsonObject.getString("assignee");
+            }
         } catch (ParseException e) {
             e.printStackTrace();
             throw new JSONException(e.getMessage());
         }
-
-        String executedBy=jsonObject.getString("executedBy");
-        String assignee=jsonObject.getString("assignee");
 
         TestRun res=new TestRun(selfUri,key,id,status,startedOn,finishedOn,assignee,executedBy,defects,evidences,comments);
         return res;

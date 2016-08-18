@@ -19,13 +19,13 @@ public class TestRun extends BasicIssue {
     private Date finishedOn;
     private Iterable<Defect> defects;
     private Iterable<Evidence> evidences;
-    private Iterable<Comment> comments;
+    private Comment comment;
 
     public TestRun(URI self,String key,Long id){
         super(self,key,id);
     }
 
-    public TestRun(URI self, String key, Long id,Status status,Date startedOn,Date finishedOn,String assignee,String executedBy,Iterable<Defect> defects,Iterable<Evidence> evidences,Iterable<Comment> comments) {
+    public TestRun(URI self, String key, Long id,Status status,Date startedOn,Date finishedOn,String assignee,String executedBy,Iterable<Defect> defects,Iterable<Evidence> evidences,Comment comment) {
         super(self, key, id);
         this.status=status;
         this.assignee=assignee;
@@ -34,7 +34,7 @@ public class TestRun extends BasicIssue {
         this.finishedOn=finishedOn;
         this.defects=defects;
         this.evidences=evidences;
-        this.comments=comments;
+        this.comment=comment;
     }
 
     public Status getStatus() {
@@ -61,12 +61,12 @@ public class TestRun extends BasicIssue {
         this.evidences = evidences;
     }
 
-    public Iterable<Comment> getComments() {
-        return comments;
+    public Comment getComment() {
+        return comment;
     }
 
-    public void setComments(ArrayList<Comment> comments) {
-        this.comments = comments;
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 
     public String getExecutedBy() {

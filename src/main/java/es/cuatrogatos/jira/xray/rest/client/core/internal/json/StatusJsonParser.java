@@ -11,6 +11,6 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class StatusJsonParser implements JsonObjectParser<TestRun.Status> {
     public TestRun.Status parse(JSONObject jsonObject) throws JSONException {
-        return null;
+        throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
 }

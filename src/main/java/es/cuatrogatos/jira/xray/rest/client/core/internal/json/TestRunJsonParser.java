@@ -22,6 +22,7 @@ import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
  */
 public class TestRunJsonParser implements JsonObjectParser<TestRun> {
     private final static DefectJsonParser defectParser=new DefectJsonParser();
+    private final static EvidenceJsonParser evidenceParser=new EvidenceJsonParser();
     public TestRunJsonParser(){
     }
 
@@ -33,8 +34,10 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
         TestRun.Status status=getStatus(jsonObject);
         GenericJsonArrayParser arrayParser=new GenericJsonArrayParser(defectParser);
         Iterable<Defect> defects=arrayParser.parse(jsonObject.getJSONArray("defects"));
-        Iterable<Evidence> evidences=null;
-        Iterable<Comment> comments=null;
+        arrayParser=new GenericJsonArrayParser(evidenceParser);
+        Iterable<Evidence> evidences=arrayParser.parse(jsonObject.getJSONArray("evidences"));
+        //TODO: CHECK IF THE RENDERED STATE IS TRANSFERED OVER THE REST API.
+        Comment comment=new Comment(jsonObject.getString("comment"),jsonObject.getString("comment"));
 
         Date startedOn = null;
         Date finishedOn = null;
@@ -59,7 +62,7 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
             throw new JSONException(e.getMessage());
         }
 
-        TestRun res=new TestRun(selfUri,key,id,status,startedOn,finishedOn,assignee,executedBy,defects,evidences,comments);
+        TestRun res=new TestRun(selfUri,key,id,status,startedOn,finishedOn,assignee,executedBy,defects,evidences,comment);
         return res;
     }
 

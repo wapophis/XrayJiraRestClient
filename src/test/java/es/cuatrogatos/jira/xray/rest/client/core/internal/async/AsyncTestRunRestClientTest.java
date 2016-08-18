@@ -18,11 +18,11 @@ public class AsyncTestRunRestClientTest {
     private final XrayRestAsyncRestClientFactory factory=new XrayRestAsyncRestClientFactory();
     private AsyncXrayJiraRestClient restClient;
 
-    private final String uriLocation="";
-    private final String username="";
-    private final String password="";
-    private final String TEST_EXEC_KEY="";
-    private final String TEST_KEY="";
+    private final String uriLocation="https://sasjira.services.connectis.es/jira/";
+    private final String username="luis.martinez";
+    private final String password="Ln9312es";
+    private final String TEST_EXEC_KEY="DYPIT-1728";
+    private final String TEST_KEY="DYPIT-1608";
     private final long TEST_ID=1827;
 
 
@@ -58,6 +58,14 @@ public class AsyncTestRunRestClientTest {
         assertEquals(testRun.getId().longValue(),jsonObject.getLong("id"));
         assertEquals(testRun.getStartedOn(),new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("startedOn")));
         assertEquals(testRun.getFinishedOn(),new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("finishedOn")));
+    }
+
+    @Test
+    public void testGetTestRunsByTestKey() throws Exception{
+        Iterable<TestRun> testRunIterable=restClient.getTestRunClient().getTestRuns(TEST_KEY).claim();
+        for(TestRun testRun: testRunIterable){
+            assertNotNull(testRun);
+        }
     }
 
     @Test

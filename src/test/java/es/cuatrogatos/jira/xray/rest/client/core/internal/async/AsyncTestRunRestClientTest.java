@@ -18,19 +18,20 @@ public class AsyncTestRunRestClientTest {
     private final XrayRestAsyncRestClientFactory factory=new XrayRestAsyncRestClientFactory();
     private AsyncXrayJiraRestClient restClient;
 
-    private final String uriLocation="";
-    private final String username="";
-    private final String password="";
-    private final String TEST_EXEC_KEY="";
-    private final String TEST_KEY="";
+    private final String uriLocation=System.getenv("JIRA_URI");
+    private final String username=System.getenv("JIRA_USER");;
+    private final String password=System.getenv("JIRA_PASSWORD");;
+    private final String TEST_EXEC_KEY="DYPIT-1728";
+    private final String TEST_KEY="DYPIT-1608";
     private final long TEST_ID=1827;
 
 
     private JSONObject jsonObject=null;
     @Before
     public void setUp() throws Exception {
-    restClient= (AsyncXrayJiraRestClient) factory.createWithBasicHttpAuthentication(new URI(uriLocation),username,password);
-    jsonObject= new JSONObject("{\"id\":1827,\"status\":\"ABORTED\",\"assignee\":\"sandra.molina\",\"executedBy\":\"luis.martinez\",\"startedOn\":\"19/jul/16 10:51 AM\",\"finishedOn\":\"19/jul/16 11:53 AM\",\"defects\":[],\"evidences\":[],\"steps\":[]}");
+        System.out.println("JIRA_URI:"+uriLocation);
+        restClient= (AsyncXrayJiraRestClient) factory.createWithBasicHttpAuthentication(new URI(uriLocation),username,password);
+        jsonObject= new JSONObject("{\"id\":1827,\"status\":\"ABORTED\",\"assignee\":\"sandra.molina\",\"executedBy\":\"luis.martinez\",\"startedOn\":\"19/jul/16 10:51 AM\",\"finishedOn\":\"19/jul/16 11:53 AM\",\"defects\":[],\"evidences\":[],\"steps\":[]}");
     }
 
     @After

@@ -36,8 +36,6 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
         Iterable<Defect> defects=arrayParser.parse(jsonObject.getJSONArray("defects"));
         arrayParser=new GenericJsonArrayParser(evidenceParser);
         Iterable<Evidence> evidences=arrayParser.parse(jsonObject.getJSONArray("evidences"));
-        //TODO: CHECK IF THE RENDERED STATE IS TRANSFERED OVER THE REST API.
-        Comment comment=new Comment(jsonObject.getString("comment"),jsonObject.getString("comment"));
 
         Date startedOn = null;
         Date finishedOn = null;
@@ -62,7 +60,7 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
             throw new JSONException(e.getMessage());
         }
 
-        TestRun res=new TestRun(selfUri,key,id,status,startedOn,finishedOn,assignee,executedBy,defects,evidences,comment);
+        TestRun res=new TestRun(selfUri,key,id,status,startedOn,finishedOn,assignee,executedBy,defects,evidences,parseComment(jsonObject));
         return res;
     }
 
@@ -83,6 +81,14 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
             return TestRun.Status.PASS;
         }
         return null;
+    }
+
+    private Comment parseComment(JSONObject jsonObject){
+        try {
+            return new Comment(jsonObject.getString("comment"), jsonObject.getString("comment"));
+        }catch(JSONException jE){
+            return new Comment("","");
+        }
     }
 
 }

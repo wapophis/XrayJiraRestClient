@@ -11,6 +11,8 @@ public interface TestRunRestClient {
     Promise<TestRun> getTestRun(String testExecKey, String testKey);
     Promise<TestRun> getTestRun(Long testRunId);
     Promise<TestRun> updateTestRun(TestRun testRunInput);
+    Promise<Iterable<TestRun>> getTestRuns(String testKey);
+
 
     Promise<TestRun.Status> getStatus(Long testRunId);
     Promise<TestRun.Status> updateStatus(Long testRunId,TestRun.Status statusInput);

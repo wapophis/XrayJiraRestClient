@@ -1,21 +1,24 @@
 package es.cuatrogatos.jira.xray.rest.client.core.internal.async;
 
 import java.net.URI;
+import java.util.ArrayList;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 
 import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.jira.rest.client.api.SearchRestClient;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.async.AbstractAsynchronousRestClient;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousSearchRestClient;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
 import com.atlassian.util.concurrent.Promise;
 
+import com.google.common.base.Function;
 import es.cuatrogatos.jira.xray.rest.client.api.TestRunRestClient;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Comment;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Evidence;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Example;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.TestStep;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.*;
+import es.cuatrogatos.jira.xray.rest.client.core.internal.PluginConstants;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.StatusJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.TestRunJsonParser;
 
@@ -26,15 +29,16 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
     private URI baseUri;
     private final TestRunJsonParser testRunParser=new TestRunJsonParser();
     private final StatusJsonParser  statusParser=new StatusJsonParser();
-
-    public AsyncTestRunRestClient(URI serverUri, DisposableHttpClient httpClient){
-        super(httpClient);
-        baseUri = UriBuilder.fromUri(serverUri).path("/rest/raven/1.0/api/").build(new Object[0]);
-
-    }
+    private SearchRestClient searchRestClient=null;
 
     protected AsyncTestRunRestClient(HttpClient client) {
         super(client);
+    }
+
+    public AsyncTestRunRestClient(URI serverUri, DisposableHttpClient httpClient){
+        super(httpClient);
+        searchRestClient=new AsynchronousSearchRestClient(UriBuilder.fromUri(serverUri).path("rest/api/latest/").build(new Object[0]),httpClient);
+        baseUri = UriBuilder.fromUri(serverUri).path("/rest/raven/{restVersion}/api/").build(PluginConstants.XRAY_REST_VERSION);
     }
 
     public Promise<TestRun> getTestRun(String testExecKey, String testKey) {
@@ -54,9 +58,27 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
     }
 
     /**
+     * Query the testRuns using the "testTestExecutions" JQL defined by the XRAY plugin in JIRA.
+     * @param testKey Issue jira key for the test.
+     * @return a list of XRAY test-runs in which the Test identified by test-key is involved in
+     */
+    public Promise<Iterable<TestRun>> getTestRuns(final String testKey) {
+        Promise<SearchResult> searchResultPromise= searchRestClient.searchJql("issue in testTestExecutions(\""+testKey+"\") ");
+        return searchResultPromise.map(new Function<SearchResult,Iterable<TestRun>>(){
+            public Iterable<TestRun> apply(@Nullable SearchResult searchResult) {
+                ArrayList<TestRun> testRunsList=new ArrayList<TestRun>();
+                for(Issue issue: searchResult.getIssues() ){
+                    testRunsList.add(getTestRun(issue.getKey(),testKey).claim());
+                }
+                return testRunsList;
+            }
+        });
+    }
+
+    /**
      * Rest-API call to the /{testrun_id}/status return not json response so crash
-     * @BUG-ID: http://jira.xpand-addons.com/browse/XRAY-964.
-     * @param testRunId
+     * http://jira.xpand-addons.com/browse/XRAY-964.
+     * @param testRunId Internal xray id for the TestRun
      * @return Status from the test run
      */
     public Promise<TestRun.Status> getStatus(Long testRunId) {

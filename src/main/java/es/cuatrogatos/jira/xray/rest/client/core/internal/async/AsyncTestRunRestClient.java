@@ -38,11 +38,19 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
         return this.getAndParse(uriBuilder.build(new Object[0]),this.testRunParser);
     }
 
+<<<<<<< HEAD
     public Promise<TestRun> getTestRun(Long testRunId) {
         UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
         uriBuilder.path("testrun").path("{id}");
         return this.getAndParse(uriBuilder.build(testRunId),this.testRunParser);
     }
+=======
+	public Promise<TestRun> getTestRun(Long testRunId) {
+		UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
+		uriBuilder.path("testrun").path(String.valueOf(testRunId));
+		return this.getAndParse(uriBuilder.build(new Object[0]), this.testRunParser);
+	}
+>>>>>>> 84297a3874972c8a89c9713f2e030aa86abe95a8
 
     public Promise<TestRun> updateTestRun(TestRun testRunInput) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");

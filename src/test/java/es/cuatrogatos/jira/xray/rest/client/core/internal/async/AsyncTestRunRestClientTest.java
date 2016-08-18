@@ -1,13 +1,14 @@
 package es.cuatrogatos.jira.xray.rest.client.core.internal.async;
 
-import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
+import static org.junit.Assert.assertEquals;
+
+import java.net.URI;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.URI;
-
-import static org.junit.Assert.*;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
 
 /**
  * Created by lucho on 17/08/16.
@@ -44,12 +45,6 @@ public class AsyncTestRunRestClientTest {
     }
     
     @Test
-    public void testGetTestRun2() throws Exception {
-       TestRun testRun=restClient.getTestRunClient().getTestRun(1973L).claim();
-       assertEquals(testRun.getStatus().name(),"TODO");
-    }
-
-	@Test
 	public void testGetTestRun2() throws Exception {
 		TestRun testRun = restClient.getTestRunClient().getTestRun(1973L).claim();
 		assertEquals(testRun.getStatus().name(), "TODO");

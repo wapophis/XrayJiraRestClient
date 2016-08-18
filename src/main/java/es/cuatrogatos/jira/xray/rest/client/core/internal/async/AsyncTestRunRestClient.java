@@ -1,18 +1,23 @@
 package es.cuatrogatos.jira.xray.rest.client.core.internal.async;
 
+import java.net.URI;
+
+import javax.ws.rs.core.UriBuilder;
+
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.jira.rest.client.internal.async.AbstractAsynchronousRestClient;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
 import com.atlassian.util.concurrent.Promise;
+
 import es.cuatrogatos.jira.xray.rest.client.api.TestRunRestClient;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.*;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Comment;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Evidence;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Example;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.TestStep;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.StatusJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.TestRunJsonParser;
-import jdk.nashorn.internal.parser.JSONParser;
-
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Created by lucho on 11/08/16.
@@ -38,19 +43,11 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
         return this.getAndParse(uriBuilder.build(new Object[0]),this.testRunParser);
     }
 
-<<<<<<< HEAD
     public Promise<TestRun> getTestRun(Long testRunId) {
         UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
         uriBuilder.path("testrun").path("{id}");
         return this.getAndParse(uriBuilder.build(testRunId),this.testRunParser);
     }
-=======
-	public Promise<TestRun> getTestRun(Long testRunId) {
-		UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
-		uriBuilder.path("testrun").path(String.valueOf(testRunId));
-		return this.getAndParse(uriBuilder.build(new Object[0]), this.testRunParser);
-	}
->>>>>>> 84297a3874972c8a89c9713f2e030aa86abe95a8
 
     public Promise<TestRun> updateTestRun(TestRun testRunInput) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");

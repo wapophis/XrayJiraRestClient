@@ -18,11 +18,11 @@ public class AsyncTestRunRestClientTest {
     private final XrayRestAsyncRestClientFactory factory=new XrayRestAsyncRestClientFactory();
     private AsyncXrayJiraRestClient restClient;
 
-    private final String uriLocation="https://sasjira.services.connectis.es/jira/";
-    private final String username="luis.martinez";
-    private final String password="Ln9312es";
-    private final String TEST_EXEC_KEY="DYPIT-1728";
-    private final String TEST_KEY="DYPIT-1608";
+    private final String uriLocation="";
+    private final String username="";
+    private final String password="";
+    private final String TEST_EXEC_KEY="";
+    private final String TEST_KEY="";
     private final long TEST_ID=1827;
 
 

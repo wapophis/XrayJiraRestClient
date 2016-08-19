@@ -21,9 +21,9 @@ public class AsyncTestRunRestClientTest {
     private final String uriLocation=System.getenv("JIRA_URI");
     private final String username=System.getenv("JIRA_USER");;
     private final String password=System.getenv("JIRA_PASSWORD");;
-    private final String TEST_EXEC_KEY="DYPIT-1728";
-    private final String TEST_KEY="DYPIT-1608";
-    private final long TEST_ID=1827;
+    private final String TEST_EXEC_KEY="PBT-27";
+    private final String TEST_KEY="PBT-2";
+    private final long TEST_ID=1977;
 
 
     private JSONObject jsonObject=null;
@@ -31,7 +31,109 @@ public class AsyncTestRunRestClientTest {
     public void setUp() throws Exception {
         System.out.println("JIRA_URI:"+uriLocation);
         restClient= (AsyncXrayJiraRestClient) factory.createWithBasicHttpAuthentication(new URI(uriLocation),username,password);
-        jsonObject= new JSONObject("{\"id\":1827,\"status\":\"ABORTED\",\"assignee\":\"sandra.molina\",\"executedBy\":\"luis.martinez\",\"startedOn\":\"19/jul/16 10:51 AM\",\"finishedOn\":\"19/jul/16 11:53 AM\",\"defects\":[],\"evidences\":[],\"steps\":[]}");
+        jsonObject= new JSONObject("{\n" +
+                "  \"id\" : 1977,\n" +
+                "  \"status\" : \"FAIL\",\n" +
+                "  \"executedBy\" : \"rgarcial\",\n" +
+                "  \"startedOn\" : \"08/ago/16 10:24 AM\",\n" +
+                "  \"finishedOn\" : \"viernes 1:19 PM\",\n" +
+                "  \"defects\" : [\n" +
+                "    {\n" +
+                "      \"id\" : 16414,\n" +
+                "      \"key\" : \"PBT-28\",\n" +
+                "      \"summary\" : \"Especificar los detalles del requisito\",\n" +
+                "      \"status\" : \"Open\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"evidences\" : [\n" +
+                "    {\n" +
+                "      \"id\" : 2,\n" +
+                "      \"fileName\" : \"2012-04-14_130335.png\",\n" +
+                "      \"fileSize\" : \"19 kB\",\n" +
+                "      \"created\" : \"Hoy 7:16 PM\",\n" +
+                "      \"author\" : \"luis.martinez\",\n" +
+                "      \"fileURL\" : \"https://sasjira.services.connectis.es/jira/plugins/servlet/raven/attachment/2/2012-04-14_130335.png\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"comment\" : \"UN COMENTARIO DE PRUEBA\",\n" +
+                "  \"steps\" : [\n" +
+                "    {\n" +
+                "      \"id\" : 7278,\n" +
+                "      \"index\" : 1,\n" +
+                "      \"step\" : {\n" +
+                "        \"raw\" : \"CR-VC-001 ¿Se ha recogido toda la información relativa a los requisitos?\",\n" +
+                "        \"rendered\" : \"<p>CR-VC-001 ¿Se ha recogido toda la información relativa a los requisitos?</p>\"\n" +
+                "      },\n" +
+                "      \"data\" : {\n" +
+                "        \"rendered\" : \"\"\n" +
+                "      },\n" +
+                "      \"result\" : {\n" +
+                "        \"raw\" : \"Indicación de todos los campos requeridos para cada requisito.\\n•\\tCódigo único e invariable.\\n•\\tNombre.\\n•\\tVersión.\\n•\\tFecha.\\n•\\tOrigen del requisito.\\n•\\tPrioridad.\\n•\\tDescripción.\\n•\\tSolución propuesta.\\n\",\n" +
+                "        \"rendered\" : \"<p>Indicación de todos los campos requeridos para cada requisito.<br/>•Código único e invariable.<br/>•Nombre.<br/>•Versión.<br/>•Fecha.<br/>•Origen del requisito.<br/>•Prioridad.<br/>•Descripción.<br/>•Solución propuesta.</p>\"\n" +
+                "      },\n" +
+                "      \"attachments\" : [ ],\n" +
+                "      \"status\" : \"PASS\",\n" +
+                "      \"comment\" : {\n" +
+                "        \"raw\" : \"OK\",\n" +
+                "        \"rendered\" : \"<p>OK</p>\"\n" +
+                "      },\n" +
+                "      \"defects\" : [ ],\n" +
+                "      \"evidences\" : [ ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"id\" : 7279,\n" +
+                "      \"index\" : 2,\n" +
+                "      \"step\" : {\n" +
+                "        \"raw\" : \"CR-VC-002 ¿Se han descrito los requisitos claramente?\\n¿Están definidos los requisitos o funciones en términos no ambiguos?\\n\",\n" +
+                "        \"rendered\" : \"<p>CR-VC-002 ¿Se han descrito los requisitos claramente?<br/>¿Están definidos los requisitos o funciones en términos no ambiguos?</p>\"\n" +
+                "      },\n" +
+                "      \"data\" : {\n" +
+                "        \"rendered\" : \"\"\n" +
+                "      },\n" +
+                "      \"result\" : {\n" +
+                "        \"raw\" : \"Los requisitos deben estar descritos de forma clara y comprensible para personal técnico, que no conoce el sistema, y usuarios, que no conocen el vocabulario técnico.\\nInexistencia de ambigüedades en la redacción.\\n\",\n" +
+                "        \"rendered\" : \"<p>Los requisitos deben estar descritos de forma clara y comprensible para personal técnico, que no conoce el sistema, y usuarios, que no conocen el vocabulario técnico.<br/>Inexistencia de ambigüedades en la redacción.</p>\"\n" +
+                "      },\n" +
+                "      \"attachments\" : [ ],\n" +
+                "      \"status\" : \"FAIL\",\n" +
+                "      \"comment\" : {\n" +
+                "        \"raw\" : \"Requisito incompleto\",\n" +
+                "        \"rendered\" : \"<p>Requisito incompleto</p>\"\n" +
+                "      },\n" +
+                "      \"defects\" : [\n" +
+                "        {\n" +
+                "          \"id\" : 16414,\n" +
+                "          \"key\" : \"PBT-28\",\n" +
+                "          \"summary\" : \"Especificar los detalles del requisito\",\n" +
+                "          \"status\" : \"Open\"\n" +
+                "        }\n" +
+                "      ],\n" +
+                "      \"evidences\" : [ ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"id\" : 7280,\n" +
+                "      \"index\" : 3,\n" +
+                "      \"step\" : {\n" +
+                "        \"raw\" : \"CR-VC-003 ¿Son consistentes los requisitos?\",\n" +
+                "        \"rendered\" : \"<p>CR-VC-003 ¿Son consistentes los requisitos?</p>\"\n" +
+                "      },\n" +
+                "      \"data\" : {\n" +
+                "        \"rendered\" : \"\"\n" +
+                "      },\n" +
+                "      \"result\" : {\n" +
+                "        \"raw\" : \"Inexistencia de contradicciones entre requisitos.\",\n" +
+                "        \"rendered\" : \"<p>Inexistencia de contradicciones entre requisitos.</p>\"\n" +
+                "      },\n" +
+                "      \"attachments\" : [ ],\n" +
+                "      \"status\" : \"EXECUTING\",\n" +
+                "      \"comment\" : {\n" +
+                "        \"rendered\" : \"\"\n" +
+                "      },\n" +
+                "      \"defects\" : [ ],\n" +
+                "      \"evidences\" : [ ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}");
     }
 
     @After

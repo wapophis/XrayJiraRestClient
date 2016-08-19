@@ -20,6 +20,7 @@ public class XrayRestAsyncRestClientFactory extends AsynchronousJiraRestClientFa
 
     public JiraRestClient create(URI serverUri, AuthenticationHandler authenticationHandler) {
         DisposableHttpClient httpClient = (new AsynchronousHttpClientFactory()).createClient(serverUri, authenticationHandler);
+
         return new AsyncXrayJiraRestClient(serverUri, httpClient);
     }
 

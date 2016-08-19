@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import es.cuatrogatos.jira.xray.rest.client.core.internal.json.util.XrayJiraDateFormatter;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -44,10 +45,10 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
         
         try {
             if (!jsonObject.isNull("startedOn")) {
-                startedOn = new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("startedOn"));
+                startedOn = new XrayJiraDateFormatter().parse(jsonObject.getString("startedOn"));
             }
             if (!jsonObject.isNull("finishedOn")) {
-                finishedOn= new SimpleDateFormat("dd/MMM/yy hh:mm aa").parse(jsonObject.getString("finishedOn"));
+                finishedOn= new XrayJiraDateFormatter().parse(jsonObject.getString("finishedOn"));
             }
             if (!jsonObject.isNull("executedBy")) {
                 executedBy = jsonObject.getString("executedBy");
@@ -90,5 +91,7 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
             return new Comment("","");
         }
     }
+
+
 
 }

@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -108,7 +108,7 @@ public class TestRunJsonParserTest {
             "  ]\n" +
             "}";
 
-    private String[] parseable_dates={"22/Jun/15 11:25 AM","viernes 1:19 PM","Hoy 7:29 PM"};
+    private String[] parseable_dates={"22/Jun/15 11:25 AM","Viernes 1:19 PM","Hoy 7:29 PM"};
 
 
     private final TestRunJsonParser parser=new TestRunJsonParser();
@@ -142,13 +142,5 @@ public class TestRunJsonParserTest {
 
     }
 
-    @Test
-    public void testParseDates() throws Exception{
-        JSONObject jsonObject=new JSONObject(data);
-        for(int i=0;i<parseable_dates.length;i++){
-            jsonObject.remove("startedOn");
-            jsonObject.put("startedOn",parseable_dates[i]);
-            assertNotNull(parser.parse(jsonObject).getStartedOn());
-        }
-    }
+
 }

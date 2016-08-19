@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -16,6 +16,23 @@ import static org.junit.Assert.assertNotNull;
  * Created by lucho on 16/08/16.
  */
 public class TestRunJsonParserTest {
+    private String[] manualTestRunData={""};
+    private String[] automatedTestRunData={""};
+    private String[] cucumberTestRunData={""};
+
+    private String KEY_ID="id";
+    private String KEY_STATUS="status";
+    private String KEY_EXECBY="executedBy";
+    private String KEY_ASSIGNEE="assignee";
+    private String KEY_STARTEDON="startedOn";
+    private String KEY_FINISHEDON="finishedON";
+    private String KEY_EXAMPLES="";
+    private String KEY_COMMENT="comment";
+    private String KEY_DEFECTS="defects";
+    private String KEY_EVIDENCES="evidences";
+
+
+
 
     private String data="{\n" +
             "  \"id\": 371,\n" +
@@ -108,7 +125,7 @@ public class TestRunJsonParserTest {
             "  ]\n" +
             "}";
 
-    private String[] parseable_dates={"22/Jun/15 11:25 AM","viernes 1:19 PM","Hoy 7:29 PM"};
+    private String[] parseable_dates={"22/Jun/15 11:25 AM","Viernes 1:19 PM","Hoy 7:29 PM"};
 
 
     private final TestRunJsonParser parser=new TestRunJsonParser();
@@ -139,16 +156,7 @@ public class TestRunJsonParserTest {
             it.next();
         }
         assertEquals(count,jsonObject.getJSONArray("defects").length());
-
     }
 
-    @Test
-    public void testParseDates() throws Exception{
-        JSONObject jsonObject=new JSONObject(data);
-        for(int i=0;i<parseable_dates.length;i++){
-            jsonObject.remove("startedOn");
-            jsonObject.put("startedOn",parseable_dates[i]);
-            assertNotNull(parser.parse(jsonObject).getStartedOn());
-        }
-    }
+
 }

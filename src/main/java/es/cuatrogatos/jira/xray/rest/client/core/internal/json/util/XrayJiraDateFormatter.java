@@ -15,6 +15,8 @@ public class XrayJiraDateFormatter {
     private final SimpleDateFormat todayDateTimeFormatter=new SimpleDateFormat("hh:mm a");
     private final SimpleDateFormat weekInYearDateTimeFormatter=new SimpleDateFormat("w");
     private final SimpleDateFormat yearDateTimeFormatter=new SimpleDateFormat("yyyy");
+    private final SimpleDateFormat hourDateTimeFormatter=new SimpleDateFormat("HH");
+    private final SimpleDateFormat minuteDateTimeFormatter=new SimpleDateFormat("mm");
 
     public Date parse(String inputDate) throws ParseException{
         Date out=null;
@@ -41,9 +43,15 @@ public class XrayJiraDateFormatter {
     private Date todayDateTimeParse(String inputDate) throws ParseException {
 
         ResourceBundle labels = ResourceBundle.getBundle("XrayDateFormatter", Locale.getDefault());
-        String todayValue=labels.getString("today");
+
         if(inputDate.contains(labels.getString("today"))){
-            return todayDateTimeFormatter.parse(inputDate.replace(labels.getString("today"),""));
+            Date givenDate=todayDateTimeFormatter.parse(inputDate.replace(labels.getString("today"),""));
+            Calendar cal=Calendar.getInstance();
+            cal.set(Calendar.YEAR,Integer.parseInt(yearDateTimeFormatter.format(new Date())));
+            cal.set(Calendar.WEEK_OF_YEAR,Integer.parseInt(weekInYearDateTimeFormatter.format(new Date())));
+            cal.set(Calendar.HOUR_OF_DAY,Integer.parseInt(hourDateTimeFormatter.format(givenDate)));
+            cal.set(Calendar.MINUTE,Integer.parseInt(minuteDateTimeFormatter.format(givenDate)));
+            return cal.getTime();
         }
         return null;
     }

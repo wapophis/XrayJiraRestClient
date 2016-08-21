@@ -21,11 +21,14 @@ public class TestRun extends BasicIssue {
     private Iterable<Evidence> evidences;
     private Comment comment;
 
+    private Iterable<TestStep> steps;
+    private Iterable<Example> examples;
+
     public TestRun(URI self,String key,Long id){
         super(self,key,id);
     }
 
-    public TestRun(URI self, String key, Long id,Status status,Date startedOn,Date finishedOn,String assignee,String executedBy,Iterable<Defect> defects,Iterable<Evidence> evidences,Comment comment) {
+    public TestRun(URI self, String key, Long id,Status status,Date startedOn,Date finishedOn,String assignee,String executedBy,Iterable<Defect> defects,Iterable<Evidence> evidences,Comment comment,Iterable<Example>examples,Iterable<TestStep>steps) {
         super(self, key, id);
         this.status=status;
         this.assignee=assignee;
@@ -35,6 +38,8 @@ public class TestRun extends BasicIssue {
         this.defects=defects;
         this.evidences=evidences;
         this.comment=comment;
+        this.steps=steps;
+        this.examples=examples;
     }
 
     public Status getStatus() {
@@ -95,6 +100,22 @@ public class TestRun extends BasicIssue {
 
     public Date getFinishedOn() {
         return finishedOn;
+    }
+
+    public Iterable<TestStep> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(Iterable<TestStep> steps) {
+        this.steps = steps;
+    }
+
+    public Iterable<Example> getExamples() {
+        return examples;
+    }
+
+    public void setExamples(Iterable<Example> examples) {
+        this.examples = examples;
     }
 
 

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import es.cuatrogatos.jira.xray.rest.client.api.domain.*;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.util.XrayJiraDateFormatter;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -13,17 +14,14 @@ import com.atlassian.jira.rest.client.internal.json.GenericJsonArrayParser;
 import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Comment;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Evidence;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
-
 /**
  * Created by lucho on 12/08/16.
  */
 public class TestRunJsonParser implements JsonObjectParser<TestRun> {
     private final static DefectJsonParser defectParser=new DefectJsonParser();
     private final static EvidenceJsonParser evidenceParser=new EvidenceJsonParser();
+    private final static TestStepJsonParser testStepParser=new TestStepJsonParser();
+    private final static ExampleJsonParser exampleParser=new ExampleJsonParser();
 
     public final static String KEY_ID="id";
     public final static String KEY_STATUS="status";
@@ -31,10 +29,12 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
     public final static String KEY_ASSIGNEE="assignee";
     public final static String KEY_STARTEDON="startedOn";
     public final static String KEY_FINISHEDON="finishedON";
-    public final static String KEY_EXAMPLES="";
+    public final static String KEY_EXAMPLES="examples";
     public final static String KEY_COMMENT="comment";
     public final static String KEY_DEFECTS="defects";
     public final static String KEY_EVIDENCES="evidences";
+    public final static String KEY_TESTSTEPS="steps";
+
 
     public TestRunJsonParser(){
     }
@@ -49,6 +49,8 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
         Iterable<Defect> defects=arrayParser.parse(jsonObject.getJSONArray(KEY_DEFECTS));
         arrayParser=new GenericJsonArrayParser(evidenceParser);
         Iterable<Evidence> evidences=arrayParser.parse(jsonObject.getJSONArray(KEY_EVIDENCES));
+        Iterable<Example> examples=null;
+        Iterable<TestStep> testSteps=null;
 
         Date startedOn = null;
         Date finishedOn = null;
@@ -68,12 +70,22 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
             if (!jsonObject.isNull(KEY_ASSIGNEE)) {
                 assignee = jsonObject.getString(KEY_ASSIGNEE);
             }
+            if (!jsonObject.isNull(KEY_TESTSTEPS)) {
+                arrayParser=new GenericJsonArrayParser(testStepParser);
+                testSteps=arrayParser.parse(jsonObject.getJSONArray(KEY_TESTSTEPS));
+            }
+            if (!jsonObject.isNull(KEY_EXAMPLES)) {
+                arrayParser=new GenericJsonArrayParser(exampleParser);
+                examples=arrayParser.parse(jsonObject.getJSONArray(KEY_EXAMPLES));
+            }
+
+
         } catch (ParseException e) {
             e.printStackTrace();
             throw new JSONException(e.getMessage());
         }
 
-        TestRun res=new TestRun(selfUri,key,id,status,startedOn,finishedOn,assignee,executedBy,defects,evidences,parseComment(jsonObject));
+        TestRun res=new TestRun(selfUri,key,id,status,startedOn,finishedOn,assignee,executedBy,defects,evidences,parseComment(jsonObject),examples,testSteps);
         return res;
     }
 

@@ -5,13 +5,15 @@ import com.atlassian.jira.rest.client.api.domain.Status;
 import org.joda.time.DateTime;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by lucho on 11/08/16.
  */
-public class TestRun extends BasicIssue {
+public class TestRun extends BasicIssue implements Versionable<TestRun> {
+    private TestRun oldVersion;
+    private int version=0;
+
     private Status status;
     private String executedBy;
     private String assignee;
@@ -23,6 +25,11 @@ public class TestRun extends BasicIssue {
 
     private Iterable<TestStep> steps;
     private Iterable<Example> examples;
+
+
+
+
+
 
     public TestRun(URI self,String key,Long id){
         super(self,key,id);
@@ -118,14 +125,23 @@ public class TestRun extends BasicIssue {
         this.examples = examples;
     }
 
+    public TestRun getOldVersion() {
+        return this.oldVersion;
+    }
+
+    public void setOldVersion(TestRun oldVersion) {
+        if(this.oldVersion==null){
+            this.oldVersion=oldVersion;
+        }
+        this.version=1;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
 
     public enum Status{TODO,EXECUTING,ABORTED,FAIL,PASS};
-
-
-
-
-
-
 
 
 }

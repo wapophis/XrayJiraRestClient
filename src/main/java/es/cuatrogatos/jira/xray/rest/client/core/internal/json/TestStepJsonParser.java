@@ -26,6 +26,8 @@ public class TestStepJsonParser implements JsonObjectParser<TestStep> {
     private final static String KEY_DATA="data";
     private final static String KEY_RESULT="result";
     private final static String KEY_ATTACHMENTS="attachments";
+    private final static String KEY_EVIDENCES="evidences";
+    private final static String KEY_DEFECTS="defects";
 
 
     public TestStep parse(JSONObject jsonObject) throws JSONException {

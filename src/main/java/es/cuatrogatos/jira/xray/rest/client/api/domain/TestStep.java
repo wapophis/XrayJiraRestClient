@@ -8,7 +8,10 @@ import java.net.URI;
 /**
  * Created by lucho on 11/08/16.
  */
-public class TestStep extends BasicIssue{
+public class TestStep extends BasicIssue implements Versionable<TestStep>{
+    private int version=0;
+    private TestStep oldVersion=null;
+
     private Long id;
     private Integer index;
     private RendereableItem step;
@@ -77,4 +80,16 @@ public class TestStep extends BasicIssue{
         this.attachments = attachments;
     }
 
+    public TestStep getOldVersion() {
+        return oldVersion;
+    }
+
+    public void setOldVersion(TestStep oldVersion) {
+        this.oldVersion=oldVersion;
+        this.version=1;
+    }
+
+    public int getVersion() {
+        return version;
+    }
 }

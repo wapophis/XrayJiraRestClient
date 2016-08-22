@@ -143,7 +143,7 @@ public class AsyncTestRunRestClientTest {
 
     @Test
     public void testGetTestRunById() throws Exception {
-            TestRun testRun=restClient.getTestRunClient().getTestRun(TEST_ID).claim();
+        TestRun testRun=restClient.getTestRunClient().getTestRun(TEST_ID).claim();
         assertEquals(testRun.getStatus().name(),jsonObject.getString("status"));
         assertEquals(testRun.getExecutedBy(),jsonObject.getString("executedBy"));
         assertEquals(testRun.getAssignee(),jsonObject.getString("assignee"));

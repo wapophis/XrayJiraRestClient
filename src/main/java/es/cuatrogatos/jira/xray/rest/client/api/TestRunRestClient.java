@@ -10,7 +10,7 @@ public interface TestRunRestClient {
 
     Promise<TestRun> getTestRun(String testExecKey, String testKey);
     Promise<TestRun> getTestRun(Long testRunId);
-    Promise<TestRun> updateTestRun(TestRun testRunInput);
+    Promise<Void> updateTestRun(TestRun testRunInput);
     Promise<Iterable<TestRun>> getTestRuns(String testKey);
 
 

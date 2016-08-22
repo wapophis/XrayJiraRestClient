@@ -21,6 +21,7 @@ import es.cuatrogatos.jira.xray.rest.client.api.domain.*;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.PluginConstants;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.StatusJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.TestRunJsonParser;
+import es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen.TestRunJsonGenerator;
 
 /**
  * Created by lucho on 11/08/16.
@@ -41,20 +42,38 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
         baseUri = UriBuilder.fromUri(serverUri).path("/rest/raven/{restVersion}/api/").build(PluginConstants.XRAY_REST_VERSION);
     }
 
+    /**
+     *
+     * @param testExecKey
+     * @param testKey
+     * @return
+     */
     public Promise<TestRun> getTestRun(String testExecKey, String testKey) {
         UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
         uriBuilder.path("testrun").queryParam("testExecIssueKey",testExecKey).queryParam("testIssueKey",testKey);
         return this.getAndParse(uriBuilder.build(new Object[0]),this.testRunParser);
     }
 
+    /**
+     *
+     * @param testRunId
+     * @return
+     */
     public Promise<TestRun> getTestRun(Long testRunId) {
         UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
         uriBuilder.path("testrun").path("{id}");
         return this.getAndParse(uriBuilder.build(testRunId),this.testRunParser);
     }
 
-    public Promise<TestRun> updateTestRun(TestRun testRunInput) {
-        throw new IllegalArgumentException("NOT IMPLEMENTED YET");
+    /**
+     * Rest-API call to the /testrun/ with params to updates it's contents.
+     * @param testRunInput
+     * @return
+     */
+    public Promise<Void> updateTestRun(TestRun testRunInput) {
+        UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
+        uriBuilder.path("testRun").path("{id}");
+        return this.post(uriBuilder.build(testRunInput.getId()),testRunInput,new TestRunJsonGenerator());
     }
 
     /**
@@ -91,8 +110,18 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
 
+    /**
+     * Rest-API call to the /testrun? with params because the default api rest-call doesn't work on json format.
+     * @param testExecKey Key from the test execution
+     * @param testKey Key from the test which is involved in this test run
+     * @return The status from test run
+     */
     public Promise<TestRun.Status> getStatus(String testExecKey, String testKey) {
-        throw new IllegalArgumentException("NOT IMPLEMENTED YET");
+        return this.getTestRun(testExecKey,testKey).map(new Function<TestRun, TestRun.Status>() {
+            public TestRun.Status apply(@Nullable TestRun testRun) {
+                return testRun.getStatus();
+            }
+        });
     }
 
     public Promise<Defect> addDefect(String issueKey) {

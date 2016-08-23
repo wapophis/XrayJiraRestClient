@@ -40,7 +40,7 @@ public class TestStepJsonParser implements JsonObjectParser<TestStep> {
                 ,Long.parseLong(jsonObject.getString(KEY_ID))
                 ,Integer.parseInt(jsonObject.getString(KEY_INDEX))
                 ,rendereableJsonParser.parse(jsonObject.getJSONObject(KEY_STEP))
-                ,rendereableJsonParser.parse(jsonObject.getJSONObject(KEY_DATA))
+                ,rendereableJsonParser.parse(jsonObject.optJSONObject(KEY_DATA))
                 ,rendereableJsonParser.parse(jsonObject.getJSONObject(KEY_RESULT))
                 ,arrayParser.parse(jsonObject.getJSONArray(KEY_ATTACHMENTS))
         );

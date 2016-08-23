@@ -34,6 +34,9 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
     public final static String KEY_DEFECTS="defects";
     public final static String KEY_EVIDENCES="evidences";
     public final static String KEY_TESTSTEPS="steps";
+    // CUMCUMBER TESTS
+    public final static String KEY_SCENARIO="scenario";
+    public final static String KEY_SCENARIO_OUTLINE="scenarioOutline";
 
 
     public TestRunJsonParser(){
@@ -78,8 +81,6 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
                 arrayParser=new GenericJsonArrayParser(exampleParser);
                 examples=arrayParser.parse(jsonObject.getJSONArray(KEY_EXAMPLES));
             }
-
-
         } catch (ParseException e) {
             e.printStackTrace();
             throw new JSONException(e.getMessage());

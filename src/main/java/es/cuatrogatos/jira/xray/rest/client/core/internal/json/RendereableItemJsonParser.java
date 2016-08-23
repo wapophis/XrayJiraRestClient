@@ -14,6 +14,6 @@ public class RendereableItemJsonParser implements JsonObjectParser<RendereableIt
     private static final String KEY_RENDERED="rendered";
 
     public RendereableItem parse(JSONObject jsonObject) throws JSONException {
-        return new RendereableItemImpl(jsonObject.getString(KEY_RAW),jsonObject.getString(KEY_RENDERED));
+        return new RendereableItemImpl(jsonObject.optString(KEY_RAW),jsonObject.optString(KEY_RENDERED));
     }
 }

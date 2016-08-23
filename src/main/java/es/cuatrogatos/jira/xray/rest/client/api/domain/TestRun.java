@@ -5,6 +5,7 @@ import com.atlassian.jira.rest.client.api.domain.Status;
 import org.joda.time.DateTime;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -25,6 +26,9 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
 
     private Iterable<TestStep> steps;
     private Iterable<Example> examples;
+
+    private String scenario;
+    private String scenarioOutline;
 
 
 
@@ -47,6 +51,32 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
         this.comment=comment;
         this.steps=steps;
         this.examples=examples;
+        try {
+            this.oldVersion= (TestRun) this.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public TestRun clone() throws CloneNotSupportedException {
+        TestRun myTestRun= null;
+        try {
+            myTestRun = new TestRun(new URI(""),this.getKey(),this.getId());
+            if(this.executedBy!=null)
+                myTestRun.setExecutedBy(new String(this.executedBy));
+            if(this.assignee!=null)
+                myTestRun.setAssignee(new String(this.assignee));
+            if(this.startedOn!=null)
+                myTestRun.setStartedOn((Date) this.startedOn.clone());
+            if(this.finishedOn!=null)
+                myTestRun.setFinishedOn((Date) this.finishedOn.clone());
+
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return myTestRun;
     }
 
     public Status getStatus() {
@@ -85,7 +115,7 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
         return executedBy;
     }
 
-    public void spubetExecutedBy(String executedBy) {
+    public void setExecutedBy(String executedBy) {
         this.executedBy = executedBy;
     }
 
@@ -108,6 +138,8 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
     public Date getFinishedOn() {
         return finishedOn;
     }
+
+    public void setFinishedOn(Date finishedOn){this.finishedOn=finishedOn;}
 
     public Iterable<TestStep> getSteps() {
         return steps;

@@ -5,7 +5,6 @@ package es.cuatrogatos.jira.xray.rest.client.core.internal.json.util;
  */
 public interface RendereableItem {
 
-
     public String getRendered();
     public void setRendered(String rendered);
 

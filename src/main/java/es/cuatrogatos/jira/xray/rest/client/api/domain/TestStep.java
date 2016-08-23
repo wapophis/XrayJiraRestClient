@@ -1,6 +1,7 @@
 package es.cuatrogatos.jira.xray.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
+import com.google.common.collect.Iterables;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.util.RendereableItem;
 
 import java.net.URI;
@@ -32,13 +33,7 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
         this.result=result;
         this.attachments=attachments;
     }
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Integer getIndex() {
         return index;
@@ -77,6 +72,7 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
     }
 
     public void setAttachments(Iterable<Evidence> attachments) {
+        this.setOldVersion(this);
         this.attachments = attachments;
     }
 

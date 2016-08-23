@@ -19,12 +19,17 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
     private RendereableItem data;
     private RendereableItem result;
     private Iterable<Evidence> attachments;
+    private Iterable<Evidence> evidences;
+    private Iterable<Defect> defects;
+    private Comment comment;
+    private Status status;
+
 
     public TestStep(URI self,String key,Long id){
         super(self,key,id);
     }
 
-    public TestStep(URI self,String key,Long id,Integer index,RendereableItem step,RendereableItem data,RendereableItem result,Iterable<Evidence> attachments)
+    public TestStep(URI self,String key,Long id,Integer index,RendereableItem step,RendereableItem data,RendereableItem result,Iterable<Evidence> attachments,Status status,Comment comment,Iterable<Defect> defects,Iterable<Evidence> evidences)
     {
         super(self,key,id);
         this.index=index;
@@ -32,6 +37,10 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
         this.data=data;
         this.result=result;
         this.attachments=attachments;
+        this.status=status;
+        this.comment=comment;
+        this.defects=defects;
+        this.evidences=evidences;
     }
 
 
@@ -88,4 +97,39 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
     public int getVersion() {
         return version;
     }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public Iterable<Evidence> getEvidences() {
+        return evidences;
+    }
+
+    public void setEvidences(Iterable<Evidence> evidences) {
+        this.evidences = evidences;
+    }
+
+    public Iterable<Defect> getDefects() {
+        return defects;
+    }
+
+    public void setDefects(Iterable<Defect> defects) {
+        this.defects = defects;
+    }
+
+    public enum Status{TODO,EXECUTING,ABORTED,FAIL,PASS};
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
 }

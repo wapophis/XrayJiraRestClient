@@ -28,7 +28,7 @@ public class TestRunJsonParser implements JsonObjectParser<TestRun> {
     public final static String KEY_EXECBY="executedBy";
     public final static String KEY_ASSIGNEE="assignee";
     public final static String KEY_STARTEDON="startedOn";
-    public final static String KEY_FINISHEDON="finishedON";
+    public final static String KEY_FINISHEDON="finishedOn";
     public final static String KEY_EXAMPLES="examples";
     public final static String KEY_COMMENT="comment";
     public final static String KEY_DEFECTS="defects";

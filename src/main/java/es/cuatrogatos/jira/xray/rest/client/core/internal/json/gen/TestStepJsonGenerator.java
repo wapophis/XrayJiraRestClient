@@ -2,6 +2,7 @@ package es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen;
 
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
 import com.google.common.collect.Iterables;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.Evidence;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.TestStep;
@@ -28,6 +29,8 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
     private final static String KEY_ATTACHMENTS="attachments";
     private final static String KEY_EVIDENCES="evidences";
     private final static String KEY_DEFECTS="defects";
+    private final static String KEY_STATUS="status";
+    private final static String KEY_COMMENT="comment";
 
     public JSONObject generate(TestStep testStep) throws JSONException {
         JSONObject ex=new JSONObject();
@@ -36,11 +39,15 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
         ex.put(KEY_STEP,rendereableGenerator.generate(testStep.getStep()));
         ex.put(KEY_DATA,rendereableGenerator.generate(testStep.getData()));
         ex.put(KEY_RESULT,rendereableGenerator.generate(testStep.getResult()));
+        ex.put(KEY_STATUS,testStep.getStatus().name());
+        ex.put(KEY_COMMENT,rendereableGenerator.generate(testStep.getComment()));
+
         if(testStep.getAttachments()!=null)
             ex.put(KEY_ATTACHMENTS,generateAttachments(testStep));
-
-//        ex.put(KEY_EVIDENCES,generateEvidences(testStep)); // TODO: IMPLEMENT IT
-//        ex.put(KEY_DEFECTS,generateDefects(testStep)); // TODO: IMPLEMENT IT
+        if(testStep.getEvidences()!=null)
+            ex.put(KEY_EVIDENCES,generateEvidences(testStep));
+        if(testStep.getDefects()!=null)
+            ex.put(KEY_DEFECTS,generateDefects(testStep));
 
     return ex;
     }
@@ -71,20 +78,26 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
             }
 
         }
-        JSONObject evidences=new JSONObject();
+        JSONObject attachments=new JSONObject();
         if(!adds.isEmpty())
-            evidences.put("add",new JSONArray(adds));
+            attachments.put("add",new JSONArray(adds));
         if(!removes.isEmpty())
-            evidences.put("remove",new JSONArray(removes));
+            attachments.put("remove",new JSONArray(removes));
 
-        return evidences;
+        return attachments;
     }
 
     private JSONObject generateEvidences(TestStep testStep) throws JSONException {
         ArrayList<Evidence> removes=new ArrayList<Evidence>();
         ArrayList<Evidence> adds=new ArrayList<Evidence>();
 
-        Iterable<Evidence> all=Iterables.concat(testStep.getOldVersion().getAttachments(),testStep.getAttachments());
+        Iterable<Evidence> all;
+
+        if( testStep.getVersion()!=0)
+            all=Iterables.concat(testStep.getOldVersion().getEvidences(),testStep.getEvidences());
+        else
+            all=testStep.getEvidences();
+
         if(testStep.getVersion()!=0){
             ArrayList<Evidence> oldEv=new ArrayList<Evidence>();
             ArrayList<Evidence> newEv=new ArrayList<Evidence>();
@@ -100,36 +113,47 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
             }
 
         }
+
         JSONObject evidences=new JSONObject();
-        evidences.put("add",new JSONArray(adds));
-        evidences.put("remove",new JSONArray(removes));
+        if(!adds.isEmpty())
+            evidences.put("add",new JSONArray(adds));
+        if(!removes.isEmpty())
+            evidences.put("remove",new JSONArray(removes));
         return evidences;
     }
 
     private JSONObject generateDefects(TestStep testStep) throws JSONException {
-        ArrayList<Evidence> removes = new ArrayList<Evidence>();
-        ArrayList<Evidence> adds = new ArrayList<Evidence>();
+        ArrayList<Defect> removes=new ArrayList<Defect>();
+        ArrayList<Defect> adds=new ArrayList<Defect>();
 
-        Iterable<Evidence> all = Iterables.concat(testStep.getOldVersion().getAttachments(), testStep.getAttachments());
+        Iterable<Defect> all;
+
+        if( testStep.getVersion()!=0)
+            all=Iterables.concat(testStep.getOldVersion().getDefects(),testStep.getDefects());
+        else
+            all=testStep.getDefects();
+
         if (testStep.getVersion() != 0) {
-            ArrayList<Evidence> oldEv = new ArrayList<Evidence>();
-            ArrayList<Evidence> newEv = new ArrayList<Evidence>();
-            Iterables.addAll(oldEv, testStep.getOldVersion().getAttachments());
-            Iterables.addAll(newEv, testStep.getAttachments());
-            for (Evidence ev : all) {
-                if (!oldEv.contains(ev) && !newEv.contains(ev)) {
-                    removes.add(ev);
+            ArrayList<Defect> oldDef = new ArrayList<Defect>();
+            ArrayList<Defect> newDef = new ArrayList<Defect>();
+            Iterables.addAll(oldDef, testStep.getOldVersion().getDefects());
+            Iterables.addAll(newDef, testStep.getDefects());
+            for (Defect def : all) {
+                if (!oldDef.contains(def) && !newDef.contains(def)) {
+                    removes.add(def);
                 }
-                if (!oldEv.contains(ev) && newEv.contains(ev)) {
-                    adds.add(ev);
+                if (!oldDef.contains(def) && newDef.contains(def)) {
+                    adds.add(def);
                 }
             }
-
         }
-        JSONObject evidences = new JSONObject();
-        evidences.put("add", new JSONArray(adds));
-        evidences.put("remove", new JSONArray(removes));
-        return evidences;
+
+        JSONObject defects = new JSONObject();
+        if(!adds.isEmpty())
+            defects.put("add", new JSONArray(adds));
+        if(!removes.isEmpty())
+            defects.put("remove", new JSONArray(removes));
+        return defects;
     }
 
 }

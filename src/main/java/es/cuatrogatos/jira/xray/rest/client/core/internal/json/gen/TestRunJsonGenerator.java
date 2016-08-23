@@ -1,6 +1,8 @@
 package es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen;
 
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Evidence;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.TestStep;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.TestRunJsonParser;
@@ -34,6 +36,8 @@ public class TestRunJsonGenerator implements JsonGenerator<TestRun> {
 
     private final static RendereableItemJsonGenerator commentsGenerator=new RendereableItemJsonGenerator();
     private final static TestStepJsonGenerator testStepsGenerator=new TestStepJsonGenerator();
+    private final static DefectJSONGenerator defectsGenerator=new DefectJSONGenerator();
+    private final static EvidenceJsonGenerator evidencesGenerator=new EvidenceJsonGenerator();
 
 
     public JSONObject generate(TestRun testRun) throws JSONException {
@@ -45,7 +49,7 @@ public class TestRunJsonGenerator implements JsonGenerator<TestRun> {
         ex.put(KEY_ASSIGNEE,testRun.getOldVersion().getAssignee());
         ex.put(KEY_FINISHEDON,testRun.getOldVersion().getFinishedOn());
         // UPDATABLE FIELDS
-        ex.put(KEY_COMMENT,commentsGenerator.generate(testRun.getComment()));
+        ex.put(KEY_COMMENT,commentsGenerator.generate(testRun.getComment()).get("raw"));
         ex.put(KEY_STATUS,testRun.getStatus().name());
         ex.put(KEY_DEFECTS,generateDefects(testRun));
         ex.put(KEY_EVIDENCES,generateEvidences(testRun));
@@ -57,13 +61,20 @@ public class TestRunJsonGenerator implements JsonGenerator<TestRun> {
         return ex;
     }
 
-    private JSONObject generateEvidences(TestRun testRun) {
-        return new JSONObject();
+    private JSONArray generateEvidences(TestRun testRun) throws JSONException {
+        ArrayList<JSONObject> evidences=new ArrayList<JSONObject>();
+        for(Evidence ev: testRun.getEvidences()){
+            evidences.add(evidencesGenerator.generate(ev));
+        }
+        return new JSONArray(evidences);
     }
 
-    private JSONObject generateDefects(TestRun testRun) {
-
-        return new JSONObject();
+    private JSONArray generateDefects(TestRun testRun) throws JSONException {
+        ArrayList<JSONObject> defects=new ArrayList<JSONObject>();
+        for(Defect def: testRun.getDefects()){
+            defects.add(defectsGenerator.generate(def));
+        }
+        return new JSONArray(defects);
     }
 
     private JSONArray generateTestSteps(TestRun testRun) throws JSONException {

@@ -13,8 +13,13 @@ public class Comment implements RendereableItem {
         this.rendered=rendered;
     }
 
+    public Comment(RendereableItem item){
+        this.raw=item.getRaw();
+        this.rendered=item.getRendered();
+    }
+
     public String getRendered() {
-        return raw;
+        return rendered;
     }
 
     public void setRendered(String rendered) {

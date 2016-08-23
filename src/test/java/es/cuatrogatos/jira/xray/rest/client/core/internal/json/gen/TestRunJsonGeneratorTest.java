@@ -148,8 +148,34 @@ public class TestRunJsonGeneratorTest {
         JSONObject generated=generator.generate(testRun);
         Logger.getAnonymousLogger().warning("Generated:"+generated);
         assertEquals(testRun.getId().longValue(),generated.getLong(TestRunJsonGenerator.KEY_ID));
-        assertEquals(new JSONObject("{\"remove\":[\"KEY-124\"]}").toString(),generated.getJSONObject(TestRunJsonGenerator.KEY_DEFECTS).toString());
+        assertEquals(new JSONObject("{\"remove\":[\"KEY-777\"]}").toString(),generated.getJSONObject(TestRunJsonGenerator.KEY_DEFECTS).toString());
     }
+
+    @Test
+    public void testSimpleManualAddRemoveDefects() throws Exception {
+        testRun=jsonParser.parse(new JSONObject(TestRunDataBank.JSON_MANUAL_SIMPLE_TEST_WITH_DEFECTS));
+        TestRunJsonGenerator generator=new TestRunJsonGenerator();
+        Collection<Defect> defects=new ArrayList<Defect>();
+        Iterables.addAll(defects,testRun.getDefects());
+        defects.remove(defects.toArray()[0]);
+
+        // ADD NEW DEFECT TO ARRAY
+        Defect newDefect=new Defect("KEY-124");
+        Defect newDefect1=new Defect("KEY-125");
+        Defect newDefect2=new Defect("KEY-126");
+        defects.add(newDefect);
+        defects.add(newDefect1);
+        defects.add(newDefect2);
+
+        testRun.setDefects(defects);
+        JSONObject generated=generator.generate(testRun);
+        Logger.getAnonymousLogger().warning("Generated:"+generated);
+        assertEquals(testRun.getId().longValue(),generated.getLong(TestRunJsonGenerator.KEY_ID));
+        assertEquals(new JSONObject("{\"add\":[\"KEY-124\",\"KEY-125\",\"KEY-126\"],\"remove\":[\"KEY-777\"]}").toString(),generated.getJSONObject(TestRunJsonGenerator.KEY_DEFECTS).toString());
+    }
+
+
+
 
 
 

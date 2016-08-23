@@ -13,15 +13,20 @@ import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.async.AbstractAsynchronousRestClient;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousSearchRestClient;
 import com.atlassian.jira.rest.client.internal.async.DisposableHttpClient;
+import com.atlassian.jira.rest.client.internal.json.JsonObjectParser;
 import com.atlassian.util.concurrent.Promise;
 
 import com.google.common.base.Function;
+import com.sun.istack.logging.Logger;
 import es.cuatrogatos.jira.xray.rest.client.api.TestRunRestClient;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.*;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.PluginConstants;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.StatusJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.TestRunJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen.TestRunJsonGenerator;
+import es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen.TestRunUpdateJsonGenerator;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * Created by lucho on 11/08/16.
@@ -29,6 +34,7 @@ import es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen.TestRunJsonGe
 public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient implements TestRunRestClient {
     private URI baseUri;
     private final TestRunJsonParser testRunParser=new TestRunJsonParser();
+    private final TestRunUpdateJsonGenerator testRunUpdateJsonGenerator=new TestRunUpdateJsonGenerator();
     private final StatusJsonParser  statusParser=new StatusJsonParser();
     private SearchRestClient searchRestClient=null;
 
@@ -72,8 +78,21 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
      */
     public Promise<Void> updateTestRun(TestRun testRunInput) {
         UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
-        uriBuilder.path("testRun").path("{id}");
-        return this.post(uriBuilder.build(testRunInput.getId()),testRunInput,new TestRunJsonGenerator());
+        uriBuilder.path("testrun").path("{id}");
+        System.out.println(uriBuilder.build(testRunInput.getId()));
+        TestRunJsonGenerator jsonGenerator=new TestRunJsonGenerator();
+        try {
+            System.out.println(testRunUpdateJsonGenerator.generate(testRunInput));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return this.putAndParse(uriBuilder.build(testRunInput.getId()), testRunInput,testRunUpdateJsonGenerator, new JsonObjectParser<Void>() {
+            public Void parse(JSONObject jsonObject) throws JSONException {
+                System.out.println("CALLING PARSE ON UPDATE");
+                return null;
+            }
+        });
+
     }
 
     /**

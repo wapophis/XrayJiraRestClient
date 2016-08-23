@@ -76,7 +76,7 @@ public final class TestRunDataBank {
             "  \"defects\" : [\n" +
             "    {\n" +
             "      \"id\" : 16414,\n" +
-            "      \"key\" : \"KEY-124\",\n" +
+            "      \"key\" : \"KEY-777\",\n" +
             "      \"summary\" : \"Especificar los detalles del requisito\",\n" +
             "      \"status\" : \"Open\"\n" +
             "    }\n" +

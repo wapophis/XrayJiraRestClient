@@ -33,4 +33,8 @@ public class Comment implements RendereableItem {
     public void setRaw(String raw) {
         this.raw=raw;
     }
+
+    public Comment clone(){
+        return new Comment(this.raw,this.rendered);
+    }
 };

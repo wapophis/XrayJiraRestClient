@@ -106,7 +106,7 @@ public class TestRunJsonGenerator implements JsonGenerator<TestRun> {
                 Iterables.addAll(oldDef, testRun.getOldVersion().getDefects());
             Iterables.addAll(newDef, testRun.getDefects());
             for (Defect def : all) {
-                if (!oldDef.contains(def) && !newDef.contains(def)) {
+                if (oldDef.contains(def) && !newDef.contains(def)) {
                     removes.add(def.getKey());
                 }
                 if (!oldDef.contains(def) && newDef.contains(def)) {

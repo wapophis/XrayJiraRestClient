@@ -65,6 +65,9 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
             myTestRun = new TestRun(super.getSelf(),super.getKey(),super.getId());
             if(this.executedBy!=null)
                 myTestRun.setExecutedBy(new String(this.executedBy));
+            if(this.comment!=null){
+                myTestRun.setComment(this.comment.clone());
+            }
             if(this.assignee!=null)
                 myTestRun.setAssignee(new String(this.assignee));
             if(this.startedOn!=null)
@@ -116,6 +119,11 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
     }
 
     public void setComment(Comment comment) {
+        try {
+            this.setOldVersion(this.clone());
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("CAN'T CLONE MYSELF SO VERSIONABLE OBJECT IS LOST");
+        }
         this.comment = comment;
     }
 

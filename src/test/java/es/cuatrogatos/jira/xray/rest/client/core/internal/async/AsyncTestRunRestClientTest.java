@@ -1,5 +1,10 @@
 package es.cuatrogatos.jira.xray.rest.client.core.internal.async;
 
+import com.atlassian.jira.rest.client.api.RestClientException;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Comment;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
@@ -8,6 +13,8 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -173,7 +180,79 @@ public class AsyncTestRunRestClientTest {
 
     @Test
     public void testUpdateTestRun() throws Exception {
-        restClient.getTestRunClient().updateTestRun(new TestRun(new URI(""),"key",0L));
+
+        TestRun testRun = restClient.getTestRunClient().getTestRun(this.TEST_EXEC_KEY, this.TEST_KEY).claim();
+        // UPDATE STATUS
+        testRun.setStatus(TestRun.Status.EXECUTING);
+            try {
+                restClient.getTestRunClient().updateTestRun(testRun).claim();
+            } catch (RestClientException e) { // TODO: THE SERVER RETURN A 200 CODE AND A EMPTY RESPONSE, SO WE MUST EXTEND ABSTRACTRESTCLIENTO TO DEAL WITH IN PUT OPERATIONS
+            if(!e.getStatusCode().equals(Optional.absent()))
+                throw e;
+            }
+        TestRun updatedTestRunRefreshed=restClient.getTestRunClient().getTestRun(testRun.getId()).claim();
+        assertEquals(testRun.getStatus(),updatedTestRunRefreshed.getStatus());
+        // UPDATE STATUS AND COMMENT
+        testRun = restClient.getTestRunClient().getTestRun(this.TEST_EXEC_KEY, this.TEST_KEY).claim();
+        testRun.setStatus(TestRun.Status.ABORTED);
+        testRun.setComment(new Comment("THIS IS A COMMENT FROM THE XRAYJIRA RESTCLIENT LIBRARY FOR JAVA","THIS IS A COMMENT FROM THE <blink>XRAYJIRA RESCLIENT</blink> LIBRARY FOR JAVA"));
+        try{
+            restClient.getTestRunClient().updateTestRun(testRun).claim();
+        } catch (RestClientException e1) { // TODO: THE SERVER RETURN A 200 CODE AND A EMPTY RESPONSE, SO WE MUST EXTEND ABSTRACTRESTCLIENTO TO DEAL WITH IN PUT OPERATIONS
+            if (!e1.getStatusCode().equals(Optional.absent()))
+                throw e1;
+        }
+        updatedTestRunRefreshed=restClient.getTestRunClient().getTestRun(testRun.getId()).claim();
+        assertEquals(testRun.getStatus(),updatedTestRunRefreshed.getStatus());
+        assertEquals(testRun.getComment().getRaw(),updatedTestRunRefreshed.getComment().getRaw());
+
+        // UPDATE STATUS,COMMENTS AND ADD DEFECTS}
+        testRun = restClient.getTestRunClient().getTestRun(this.TEST_EXEC_KEY, this.TEST_KEY).claim();
+        testRun.setStatus(TestRun.Status.FAIL);
+        testRun.setComment(new Comment("THIS IS A COMMENT FROM THE XRAYJIRA RESTCLIENT LIBRARY FOR JAVA.\n FOUND NEW DEFECTS","THIS IS A COMMENT FROM THE <blink>XRAYJIRA RESCLIENT</blink> LIBRARY FOR JAVA. \n" +
+                " FOUND NEW DEFECTS"));
+        Defect defect=new Defect("PBT-29");
+        Collection<Defect> defects=new ArrayList<Defect>();
+        Iterables.addAll(defects,testRun.getDefects());
+        defects.add(defect);
+        testRun.setDefects(defects);
+        try{
+            restClient.getTestRunClient().updateTestRun(testRun).claim();
+        } catch (RestClientException e1) { // TODO: THE SERVER RETURN A 200 CODE AND A EMPTY RESPONSE, SO WE MUST EXTEND ABSTRACTRESTCLIENTO TO DEAL WITH IN PUT OPERATIONS
+            if (!e1.getStatusCode().equals(Optional.absent())) {
+                throw e1;
+            }
+        }
+        updatedTestRunRefreshed=restClient.getTestRunClient().getTestRun(testRun.getId()).claim();
+        assertEquals(testRun.getStatus(),updatedTestRunRefreshed.getStatus());
+        assertEquals(testRun.getComment().getRaw(),updatedTestRunRefreshed.getComment().getRaw());
+        // TODO: Assert the addition
+
+
+        // UPDATE STATUS,COMMENTS AND REMOVE DEFECTS}
+        testRun = restClient.getTestRunClient().getTestRun(this.TEST_EXEC_KEY, this.TEST_KEY).claim();
+        testRun.setStatus(TestRun.Status.PASS);
+        testRun.setComment(new Comment("THIS IS A COMMENT FROM THE XRAYJIRA RESTCLIENT LIBRARY FOR JAVA.\n OH IT WAS A MISTAKE :D","THIS IS A COMMENT FROM THE <blink>XRAYJIRA RESCLIENT</blink> LIBRARY FOR JAVA. \n" +
+                " OHH IT WAS A MISTAKE"));
+        defect=new Defect("PBT-29");
+        defects=new ArrayList<Defect>();
+        Iterables.addAll(defects,testRun.getDefects());
+        for(Defect def: testRun.getDefects()){
+            defects.remove(def);
+        }
+
+        testRun.setDefects(defects);
+        try{
+            restClient.getTestRunClient().updateTestRun(testRun).claim();
+        } catch (RestClientException e1) { // TODO: THE SERVER RETURN A 200 CODE AND A EMPTY RESPONSE, SO WE MUST EXTEND ABSTRACTRESTCLIENTO TO DEAL WITH IN PUT OPERATIONS
+            if (!e1.getStatusCode().equals(Optional.absent())) {
+                throw e1;
+            }
+        }
+        updatedTestRunRefreshed=restClient.getTestRunClient().getTestRun(testRun.getId()).claim();
+        assertEquals(testRun.getStatus(),updatedTestRunRefreshed.getStatus());
+        assertEquals(testRun.getComment().getRaw(),updatedTestRunRefreshed.getComment().getRaw());
+        // TODO: Assert the remove
     }
 
     @Test

@@ -2,6 +2,7 @@ package es.cuatrogatos.jira.xray.rest.client.api.domain;
 
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.Status;
+import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
 
 import java.net.URI;
@@ -58,10 +59,10 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
         }
     }
 
+    // TODO: ADD CLONE TO ARRAYS USED IN THE TEST RUN
     public TestRun clone() throws CloneNotSupportedException {
         TestRun myTestRun= null;
-        try {
-            myTestRun = new TestRun(new URI(""),this.getKey(),this.getId());
+            myTestRun = new TestRun(super.getSelf(),super.getKey(),super.getId());
             if(this.executedBy!=null)
                 myTestRun.setExecutedBy(new String(this.executedBy));
             if(this.assignee!=null)
@@ -70,12 +71,14 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
                 myTestRun.setStartedOn((Date) this.startedOn.clone());
             if(this.finishedOn!=null)
                 myTestRun.setFinishedOn((Date) this.finishedOn.clone());
-
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return null;
-        }
+            if(this.defects!=null){
+                ArrayList<Defect> cloneDefects=new ArrayList<Defect>();
+                for(Defect def:this.defects){
+                    cloneDefects.add(def.clone());
+                }
+                myTestRun.setDefects(cloneDefects);
+            }
+    //    myTestRun.resetVersion();
         return myTestRun;
     }
 
@@ -92,6 +95,11 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
     }
 
     public void setDefects(Iterable<Defect> defects) {
+        try {
+            this.setOldVersion(this.clone());
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("CAN'T CLONE MYSELF SO VERSIONABLE OBJECT IS LOST");
+        }
         this.defects = defects;
     }
 
@@ -170,6 +178,11 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
 
     public int getVersion() {
         return version;
+    }
+
+    protected void resetVersion(){
+        this.version=0;
+        this.oldVersion=null;
     }
 
 

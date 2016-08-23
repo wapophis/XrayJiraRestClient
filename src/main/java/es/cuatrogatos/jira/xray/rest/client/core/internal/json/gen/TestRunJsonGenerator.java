@@ -1,6 +1,7 @@
 package es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen;
 
 import com.atlassian.jira.rest.client.internal.json.gen.JsonGenerator;
+import com.google.common.collect.Iterables;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.Evidence;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
@@ -69,13 +70,59 @@ public class TestRunJsonGenerator implements JsonGenerator<TestRun> {
         return new JSONArray(evidences);
     }
 
-    private JSONArray generateDefects(TestRun testRun) throws JSONException {
+    private Object generateDefects (TestRun testRun) throws JSONException{
+        if(testRun.getVersion()!=0)
+            return generateDefectsUpdates(testRun);
+        else
+            return generateDefectsArray(testRun);
+    }
+
+    private JSONArray generateDefectsArray(TestRun testRun) throws JSONException {
         ArrayList<JSONObject> defects=new ArrayList<JSONObject>();
         for(Defect def: testRun.getDefects()){
             defects.add(defectsGenerator.generate(def));
         }
         return new JSONArray(defects);
     }
+
+
+    //TODO: EXTRACT LOGIC AND CLEAN CODE, IMPLEMENT COMMON CLASSES AND INTERFACES
+    private JSONObject generateDefectsUpdates(TestRun testRun) throws JSONException {
+        ArrayList<String> removes=new ArrayList<String>();
+        ArrayList<String> adds=new ArrayList<String>();
+
+        Iterable<Defect> all;
+
+        if( testRun.getVersion()!=0 && testRun.getOldVersion().getDefects()!=null)
+            all= Iterables.concat(testRun.getOldVersion().getDefects(),testRun.getDefects());
+        else
+            all=testRun.getDefects();
+
+        if (testRun.getVersion() != 0) {
+            ArrayList<Defect> oldDef = new ArrayList<Defect>();
+            ArrayList<Defect> newDef = new ArrayList<Defect>();
+
+            if(testRun.getOldVersion().getDefects()!=null)
+                Iterables.addAll(oldDef, testRun.getOldVersion().getDefects());
+            Iterables.addAll(newDef, testRun.getDefects());
+            for (Defect def : all) {
+                if (!oldDef.contains(def) && !newDef.contains(def)) {
+                    removes.add(def.getKey());
+                }
+                if (!oldDef.contains(def) && newDef.contains(def)) {
+                    adds.add(def.getKey());
+                }
+            }
+        }
+
+        JSONObject defects = new JSONObject();
+        if(!adds.isEmpty())
+            defects.put("add", new JSONArray(adds));
+        if(!removes.isEmpty())
+            defects.put("remove", new JSONArray(removes));
+        return defects;
+    }
+
 
     private JSONArray generateTestSteps(TestRun testRun) throws JSONException {
         ArrayList<JSONObject> testStepsArray=new ArrayList<JSONObject>();
@@ -84,6 +131,9 @@ public class TestRunJsonGenerator implements JsonGenerator<TestRun> {
         }
 
     return new JSONArray(testStepsArray);}
+
+
+
 
 
 }

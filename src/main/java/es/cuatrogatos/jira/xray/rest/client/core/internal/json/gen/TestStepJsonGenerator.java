@@ -19,6 +19,7 @@ import java.util.HashSet;
 public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
 
     private final static RendereableItemJsonGenerator rendereableGenerator=new RendereableItemJsonGenerator();
+    private final static DefectJSONGenerator defectsGenerator=new DefectJSONGenerator();
 
     private final static String KEY_ID="id";
     private final static String KEY_INDEX="index";
@@ -122,7 +123,23 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
         return evidences;
     }
 
-    private JSONObject generateDefects(TestStep testStep) throws JSONException {
+    private Object generateDefects (TestStep testStep) throws JSONException{
+        if(testStep.getVersion()!=0)
+            return generateDefectsUpdates(testStep);
+        else
+            return generateDefectsArray(testStep);
+    }
+
+    private JSONArray generateDefectsArray(TestStep testStep) throws JSONException {
+        ArrayList<JSONObject> defects=new ArrayList<JSONObject>();
+        for(Defect def: testStep.getDefects()){
+            defects.add(defectsGenerator.generate(def));
+        }
+        return new JSONArray(defects);
+    }
+
+    //TODO: EXTRACT LOGIC AND CLEAN CODE, IMPLEMENT COMMON CLASSES AND INTERFACES
+    private JSONObject generateDefectsUpdates(TestStep testStep) throws JSONException {
         ArrayList<Defect> removes=new ArrayList<Defect>();
         ArrayList<Defect> adds=new ArrayList<Defect>();
 

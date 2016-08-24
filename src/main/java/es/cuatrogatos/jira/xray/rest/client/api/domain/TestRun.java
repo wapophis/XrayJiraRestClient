@@ -68,6 +68,9 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
             if(this.comment!=null){
                 myTestRun.setComment(this.comment.clone());
             }
+            if(this.status!=null){
+            myTestRun.setStatus(this.status);
+            }
             if(this.assignee!=null)
                 myTestRun.setAssignee(new String(this.assignee));
             if(this.startedOn!=null)
@@ -90,6 +93,11 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
     }
 
     public void setStatus(Status status) {
+        try {
+            this.setOldVersion(this.clone());
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("CAN'T CLONE MYSELF SO VERSIONABLE OBJECT IS LOST");
+        }
         this.status = status;
     }
 
@@ -162,6 +170,11 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
     }
 
     public void setSteps(Iterable<TestStep> steps) {
+        try {
+            this.setOldVersion(this.clone());
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("CAN'T CLONE MYSELF SO VERSIONABLE OBJECT IS LOST");
+        }
         this.steps = steps;
     }
 
@@ -170,6 +183,11 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
     }
 
     public void setExamples(Iterable<Example> examples) {
+        try {
+            this.setOldVersion(this.clone());
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("CAN'T CLONE MYSELF SO VERSIONABLE OBJECT IS LOST");
+        }
         this.examples = examples;
     }
 

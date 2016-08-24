@@ -33,8 +33,6 @@ public class TestRunUpdateJsonGenerator extends TestRunJsonGenerator {
                 if(!testRun.getStatus().name().equals(testRun.getOldVersion().getStatus().name())){
                 filteredJSON.put(TestRunJsonGenerator.KEY_STATUS,testRun.getStatus().name());
                 }
-            }else{
-
             }
             // TODO: THINK ABOUT REMOVE THIS INSTANCEOF
             if(filteredJSON.opt(TestRunJsonGenerator.KEY_DEFECTS) instanceof JSONObject){

@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.Comment;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
 import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.TestStep;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.TestRunJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.testDataBanks.TestRunDataBank;
 import org.apache.commons.logging.Log;
@@ -160,7 +161,20 @@ public class TestRunUpdateJsonGeneratorTest {
 //        assertEquals(testRun.getId().longValue(),generated.getLong(TestRunJsonGenerator.KEY_ID));
         assertEquals(new JSONObject("{\"add\":[\"KEY-124\",\"KEY-125\",\"KEY-126\"],\"remove\":[\"KEY-777\"]}").toString(),generated.getJSONObject(TestRunJsonGenerator.KEY_DEFECTS).toString());
     }
+    @Test
+    public void testSimpleManualUpdateTestSteps() throws  Exception{
+        testRun=jsonParser.parse(new JSONObject(TestRunDataBank.JSON_MANUAL_SIMPLE_TEST_WITH_DEFECTS));
+        TestRunUpdateJsonGenerator generator=new TestRunUpdateJsonGenerator();
+        Collection<TestStep> steps=new ArrayList<TestStep>();
+        Iterables.addAll(steps,testRun.getSteps());
+        for(TestStep step:steps){
+            step.setStatus(TestStep.Status.EXECUTING);
+        }
+        testRun.setSteps(steps);
+        JSONObject generated=generator.generate(testRun);
+        System.out.println("GENERATED: "+generated);
 
+    }
 
 
 

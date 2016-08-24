@@ -3,6 +3,7 @@ package es.cuatrogatos.jira.xray.rest.client.api.domain;
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.google.common.collect.Iterables;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.util.RendereableItem;
+import es.cuatrogatos.jira.xray.rest.client.core.internal.json.util.RendereableItemImpl;
 
 import java.net.URI;
 
@@ -90,7 +91,8 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
     }
 
     public void setOldVersion(TestStep oldVersion) {
-        this.oldVersion=oldVersion;
+        if(this.oldVersion==null)
+            this.oldVersion=oldVersion;
         this.version=1;
     }
 
@@ -129,7 +131,36 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
     }
 
     public void setStatus(Status status) {
+        try {
+            this.setOldVersion(this.clone());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         this.status = status;
     }
+
+    public TestStep clone()  throws CloneNotSupportedException {
+        TestStep myTestStep = new TestStep(super.getSelf(), super.getKey(), super.getId());
+        if (this.step != null)
+            myTestStep.setStep(new RendereableItemImpl(this.step.getRaw(), this.step.getRendered()));
+        if (this.data != null)
+            myTestStep.setData(new RendereableItemImpl(this.data.getRaw(), this.data.getRendered()));
+        if (this.result != null)
+            myTestStep.setResult(new RendereableItemImpl(this.result.getRaw(), this.result.getRendered()));
+        if(this.comment!=null)
+            myTestStep.setComment(new Comment(this.comment.getRaw(),this.comment.getRendered()));
+        if(this.status!=null)
+            myTestStep.setStatus(this.status);
+
+        if(this.attachments!=null){
+            // CLONE ATTACHMENTS
+        }
+        if(this.attachments!=null){
+            // CLONE EVIDENCES
+        }
+        if(this.attachments!=null){
+            // CLONE DEFECTS
+        }
+    return myTestStep;}
 
 }

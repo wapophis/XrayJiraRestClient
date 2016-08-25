@@ -6,13 +6,16 @@ import es.cuatrogatos.jira.xray.rest.client.core.internal.json.util.RendereableI
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.util.RendereableItemImpl;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
 /**
  * Created by lucho on 11/08/16.
  */
-public class TestStep extends BasicIssue implements Versionable<TestStep>{
-    private int version=0;
-    private TestStep oldVersion=null;
+public class TestStep extends BasicIssue implements Versionable<TestStep> {
+    private int version = 0;
+    private TestStep oldVersion = null;
 
     private Long id;
     private Integer index;
@@ -26,22 +29,21 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
     private Status status;
 
 
-    public TestStep(URI self,String key,Long id){
-        super(self,key,id);
+    public TestStep(URI self, String key, Long id) {
+        super(self, key, id);
     }
 
-    public TestStep(URI self,String key,Long id,Integer index,RendereableItem step,RendereableItem data,RendereableItem result,Iterable<Evidence> attachments,Status status,Comment comment,Iterable<Defect> defects,Iterable<Evidence> evidences)
-    {
-        super(self,key,id);
-        this.index=index;
-        this.step=step;
-        this.data=data;
-        this.result=result;
-        this.attachments=attachments;
-        this.status=status;
-        this.comment=comment;
-        this.defects=defects;
-        this.evidences=evidences;
+    public TestStep(URI self, String key, Long id, Integer index, RendereableItem step, RendereableItem data, RendereableItem result, Iterable<Evidence> attachments, Status status, Comment comment, Iterable<Defect> defects, Iterable<Evidence> evidences) {
+        super(self, key, id);
+        this.index = index;
+        this.step = step;
+        this.data = data;
+        this.result = result;
+        this.attachments = attachments;
+        this.status = status;
+        this.comment = comment;
+        this.defects = defects;
+        this.evidences = evidences;
     }
 
 
@@ -91,9 +93,9 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
     }
 
     public void setOldVersion(TestStep oldVersion) {
-        if(this.oldVersion==null)
-            this.oldVersion=oldVersion;
-        this.version=1;
+        if (this.oldVersion == null)
+            this.oldVersion = oldVersion;
+        this.version = 1;
     }
 
     public int getVersion() {
@@ -124,7 +126,9 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
         this.defects = defects;
     }
 
-    public enum Status{TODO,EXECUTING,ABORTED,FAIL,PASS};
+    public enum Status {TODO, EXECUTING, ABORTED, FAIL, PASS}
+
+    ;
 
     public Status getStatus() {
         return status;
@@ -139,7 +143,7 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
         this.status = status;
     }
 
-    public TestStep clone()  throws CloneNotSupportedException {
+    public TestStep clone() throws CloneNotSupportedException {
         TestStep myTestStep = new TestStep(super.getSelf(), super.getKey(), super.getId());
         if (this.step != null)
             myTestStep.setStep(new RendereableItemImpl(this.step.getRaw(), this.step.getRendered()));
@@ -147,20 +151,34 @@ public class TestStep extends BasicIssue implements Versionable<TestStep>{
             myTestStep.setData(new RendereableItemImpl(this.data.getRaw(), this.data.getRendered()));
         if (this.result != null)
             myTestStep.setResult(new RendereableItemImpl(this.result.getRaw(), this.result.getRendered()));
-        if(this.comment!=null)
-            myTestStep.setComment(new Comment(this.comment.getRaw(),this.comment.getRendered()));
-        if(this.status!=null)
+        if (this.comment != null)
+            myTestStep.setComment(new Comment(this.comment.getRaw(), this.comment.getRendered()));
+        if (this.status != null)
             myTestStep.setStatus(this.status);
 
-        if(this.attachments!=null){
-            // CLONE ATTACHMENTS
+        if (this.attachments != null) {
+            Collection<Evidence> attachments = new ArrayList<Evidence>();
+            for (Evidence e : myTestStep.getAttachments()) {
+                attachments.add(new Evidence(new Long(e.getId().longValue()), e.getFileName(), e.getFileSize(), (Date) e.getCreated().clone(), e.getAuthor(), e.getFileURL()));
+            }
+            myTestStep.setAttachments(attachments);
         }
-        if(this.attachments!=null){
-            // CLONE EVIDENCES
+        if (this.evidences != null) {
+            Collection<Evidence> evidences = new ArrayList<Evidence>();
+            for (Evidence e : myTestStep.getEvidences()) {
+                evidences.add(new Evidence(new Long(e.getId().longValue()), e.getFileName(), e.getFileSize(), (Date) e.getCreated().clone(), e.getAuthor(), e.getFileURL()));
+            }
+            myTestStep.setEvidences(evidences);
         }
-        if(this.attachments!=null){
-            // CLONE DEFECTS
+        if (this.defects != null) {
+            Collection<Defect> defects = new ArrayList<Defect>();
+            for (Defect d : myTestStep.getDefects()) {
+                defects.add(new Defect(d.getSelf(), d.getKey(), d.getId(), d.getSummary(), d.getStatus()));
+            }
+            myTestStep.setDefects(defects);
         }
-    return myTestStep;}
-
+        return myTestStep;
+    }
 }
+
+

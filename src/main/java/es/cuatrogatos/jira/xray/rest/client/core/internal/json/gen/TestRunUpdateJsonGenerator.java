@@ -16,7 +16,7 @@ import java.util.Collection;
 public class TestRunUpdateJsonGenerator extends TestRunJsonGenerator {
     private static final String KEY_ADD="add";
     private static final String KEY_REMOVE="remove";
-    private static final TestStepJsonGenerator testStepGenerator=new TestStepJsonGenerator();
+    private static final TestStepUpdateJsonGenerator testStepGenerator=new TestStepUpdateJsonGenerator();
 
     public JSONObject generate(TestRun testRun) throws JSONException {
 
@@ -75,8 +75,6 @@ public class TestRunUpdateJsonGenerator extends TestRunJsonGenerator {
                 }
 
             }
-
-
             if(testRun.getComment().getRaw().equals(testRun.getOldVersion().getComment().getRaw())){
                 filteredJSON.remove(TestRunJsonGenerator.KEY_COMMENT);
             }

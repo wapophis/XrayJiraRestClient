@@ -96,7 +96,7 @@ public class TestRunUpdateJsonGeneratorTest {
         defects.add(newDefect2);
         testRun.setDefects(defects);
         JSONObject generated=generator.generate(testRun);
-        Logger.getAnonymousLogger().warning("Generated:"+generated);
+     //   Logger.getAnonymousLogger().warning("Generated:"+generated);
       //  assertEquals(testRun.getId().longValue(),generated.getLong(TestRunJsonGenerator.KEY_ID));
         assertEquals(new JSONObject("{\"add\":[\"KEY-124\",\"KEY-125\",\"KEY-126\"]}").toString(),generated.getJSONObject(TestRunJsonGenerator.KEY_DEFECTS).toString());
 
@@ -135,7 +135,7 @@ public class TestRunUpdateJsonGeneratorTest {
         defects.remove(defects.toArray()[0]);
         testRun.setDefects(defects);
         JSONObject generated=generator.generate(testRun);
-        Logger.getAnonymousLogger().warning("Generated:"+generated);
+ //       Logger.getAnonymousLogger().warning("Generated:"+generated);
 //        assertEquals(testRun.getId().longValue(),generated.getLong(TestRunJsonGenerator.KEY_ID));
         assertEquals(new JSONObject("{\"remove\":[\"KEY-777\"]}").toString(),generated.getJSONObject(TestRunJsonGenerator.KEY_DEFECTS).toString());
     }
@@ -157,7 +157,7 @@ public class TestRunUpdateJsonGeneratorTest {
 
         testRun.setDefects(defects);
         JSONObject generated=generator.generate(testRun);
-        Logger.getAnonymousLogger().warning("Generated:"+generated);
+ //       Logger.getAnonymousLogger().warning("Generated:"+generated);
 //        assertEquals(testRun.getId().longValue(),generated.getLong(TestRunJsonGenerator.KEY_ID));
         assertEquals(new JSONObject("{\"add\":[\"KEY-124\",\"KEY-125\",\"KEY-126\"],\"remove\":[\"KEY-777\"]}").toString(),generated.getJSONObject(TestRunJsonGenerator.KEY_DEFECTS).toString());
     }
@@ -172,12 +172,50 @@ public class TestRunUpdateJsonGeneratorTest {
         }
         testRun.setSteps(steps);
         JSONObject generated=generator.generate(testRun);
-        System.out.println("GENERATED: "+generated);
-
+       // System.out.println("GENERATED: "+generated);
+        assertEquals(new JSONObject("{\"steps\":[{\"id\":7388,\"status\":\"EXECUTING\",\"attachments\":{\"add\":[],\"remove\":[]},\"evidences\":{\"add\":[],\"remove\":[]},\"defects\":{\"add\":[],\"remove\":[]}},{\"id\":7389,\"status\":\"EXECUTING\",\"attachments\":{\"add\":[],\"remove\":[]},\"evidences\":{\"add\":[],\"remove\":[]},\"defects\":{\"add\":[],\"remove\":[]}}]}\n").toString()
+                ,generated.toString());
     }
 
+    @Test
+    public void testSimpleManualUpdateTestStepsAddDefects() throws  Exception{
+        testRun=jsonParser.parse(new JSONObject(TestRunDataBank.JSON_MANUAL_SIMPLE_TEST_WITH_DEFECTS));
+        TestRunUpdateJsonGenerator generator=new TestRunUpdateJsonGenerator();
+        Collection<TestStep> steps=new ArrayList<TestStep>();
+        Iterables.addAll(steps,testRun.getSteps());
+        for(TestStep step:steps){
+            Collection<Defect> defects=new ArrayList<Defect>();
+            Iterables.addAll(defects,step.getDefects());
+            defects.add(new Defect("NEWDEFECT-1"));
+            defects.add(new Defect("NEWDEFECT-2"));
+            defects.add(new Defect("NEWDEFECT-3"));
+            step.setDefects(defects);
+        }
+        testRun.setSteps(steps);
+        JSONObject generated=generator.generate(testRun);
+      //  System.out.println("GENERATED: "+generated);
+        assertEquals(new JSONObject(" {\"steps\":[{\"id\":7388,\"attachments\":{\"add\":[],\"remove\":[]},\"evidences\":{\"add\":[],\"remove\":[]},\"defects\":{\"add\":[\"NEWDEFECT-1\",\"NEWDEFECT-2\",\"NEWDEFECT-3\"],\"remove\":[]}},{\"id\":7389,\"attachments\":{\"add\":[],\"remove\":[]},\"evidences\":{\"add\":[],\"remove\":[]},\"defects\":{\"add\":[\"NEWDEFECT-1\",\"NEWDEFECT-2\",\"NEWDEFECT-3\"],\"remove\":[]}}]}\n").toString()
+                ,generated.toString());
+    }
 
-
-
-
+    @Test
+    public void testSimpleManualUpdateTestStepsRemoveDefects() throws  Exception{
+        testRun=jsonParser.parse(new JSONObject(TestRunDataBank.JSON_COMPLEX_MANUAL_TEST));
+        TestRunUpdateJsonGenerator generator=new TestRunUpdateJsonGenerator();
+        Collection<TestStep> steps=new ArrayList<TestStep>();
+        Iterables.addAll(steps,testRun.getSteps());
+        for(TestStep step:steps){
+            Collection<Defect> defects=new ArrayList<Defect>();
+         //   Iterables.addAll(defects,step.getDefects());
+            defects.add(new Defect("NEWDEFECT-1"));
+            defects.add(new Defect("NEWDEFECT-2"));
+            defects.add(new Defect("NEWDEFECT-3"));
+            step.setDefects(defects);
+        }
+        testRun.setSteps(steps);
+        JSONObject generated=generator.generate(testRun);
+     //   System.out.println("GENERATED: "+generated);
+        assertEquals(new JSONObject(" {\"steps\":[{\"id\":7278,\"attachments\":{\"add\":[],\"remove\":[]},\"evidences\":{\"add\":[],\"remove\":[]},\"defects\":{\"add\":[\"NEWDEFECT-1\",\"NEWDEFECT-2\",\"NEWDEFECT-3\"],\"remove\":[]}},{\"id\":7279,\"attachments\":{\"add\":[],\"remove\":[]},\"evidences\":{\"add\":[],\"remove\":[]},\"defects\":{\"add\":[\"NEWDEFECT-1\",\"NEWDEFECT-2\",\"NEWDEFECT-3\"],\"remove\":[\"PBT-28\"]}},{\"id\":7280,\"attachments\":{\"add\":[],\"remove\":[]},\"evidences\":{\"add\":[],\"remove\":[]},\"defects\":{\"add\":[\"NEWDEFECT-1\",\"NEWDEFECT-2\",\"NEWDEFECT-3\"],\"remove\":[]}}]}\n").toString()
+                ,generated.toString());
+    }
 }

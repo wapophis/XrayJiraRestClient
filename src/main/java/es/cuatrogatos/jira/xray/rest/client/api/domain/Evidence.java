@@ -1,6 +1,8 @@
 package es.cuatrogatos.jira.xray.rest.client.api.domain;
 
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.Date;
 
 /**
@@ -13,6 +15,8 @@ public class Evidence {
     private Date created;
     private String author;
     private URI fileURL;
+    //TODO: AS A MACHINE I WANT TO UPLOAD AN IMAGE TO A TESTRUN OR TESTSTEP IF I NEED IT
+    private ByteBuffer data;
 
     public Evidence(Long id,String fileName,String fileSize,Date created,String author,URI fileURL){
         this.id=id;
@@ -21,6 +25,7 @@ public class Evidence {
         this.created=created;
         this.author=author;
         this.fileURL=fileURL;
+
     }
 
     public Long getId() {
@@ -69,5 +74,13 @@ public class Evidence {
 
     public void setFileURL(URI fileURL) {
         this.fileURL = fileURL;
+    }
+
+    public ByteBuffer getData() {
+        return data;
+    }
+
+    public void setData(ByteBuffer data) {
+        this.data = data;
     }
 };

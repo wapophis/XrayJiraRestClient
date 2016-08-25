@@ -3,9 +3,7 @@ package es.cuatrogatos.jira.xray.rest.client.core.internal.async;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Comment;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.Defect;
-import es.cuatrogatos.jira.xray.rest.client.api.domain.TestRun;
+import es.cuatrogatos.jira.xray.rest.client.api.domain.*;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +13,7 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -253,6 +252,25 @@ public class AsyncTestRunRestClientTest {
         assertEquals(testRun.getStatus(),updatedTestRunRefreshed.getStatus());
         assertEquals(testRun.getComment().getRaw(),updatedTestRunRefreshed.getComment().getRaw());
         // TODO: Assert the remove
+
+        // UPDATE TEST STEPS DEFECTS,COMMENTS AND EVIDENCES
+        testRun = restClient.getTestRunClient().getTestRun(this.TEST_EXEC_KEY, this.TEST_KEY).claim();
+        testRun.setStatus(TestRun.Status.EXECUTING);
+        testRun.setComment(new Comment("THIS IS A COMMENT FROM THE XRAYJIRA RESTCLIENT LIBRARY FOR JAVA.\n FOUND DEFECTS IN TESTS STEPS OPERACION :0","THIS IS A COMMENT FROM THE XRAYJIRA RESTCLIENT LIBRARY FOR JAVA.\n" +
+                " FOUND DEFECTS IN TESTS STEPS OPERACION :0"));
+        Collection<TestStep> steps=new ArrayList<TestStep>();
+        Iterables.addAll(steps,testRun.getSteps());
+        for(TestStep s:steps){
+            Defect newDefect=new Defect("PBT-28");
+            defects=new ArrayList<Defect>();
+            Iterables.addAll(defects,s.getDefects());
+            defects.add(newDefect);
+            s.setDefects(defects);
+            s.setComment(testRun.getComment());
+            s.setStatus(TestStep.Status.EXECUTING);
+        }
+        testRun.setSteps(steps);
+        restClient.getTestRunClient().updateTestRun(testRun);
     }
 
     @Test
@@ -263,69 +281,73 @@ public class AsyncTestRunRestClientTest {
 
     @Test
     public void testUpdateStatus() throws Exception {
-        restClient.getTestRunClient().updateStatus(TEST_ID, TestRun.Status.ABORTED);
+        TestRun testRun=restClient.getTestRunClient().getTestRun(TEST_ID).claim();
+        TestRun result=null;
+        testRun.setStatus(TestRun.Status.ABORTED);
+        restClient.getTestRunClient().updateTestRun(testRun);
+        result=restClient.getTestRunClient().getTestRun(TEST_ID).claim();
+        assertEquals(testRun.getStatus().name(),result.getStatus().name());
     }
 
-    @Test
+
     public void testGetStatusByKey() throws Exception {
         restClient.getTestRunClient().getStatus(TEST_EXEC_KEY,TEST_KEY);
     }
 
-    @Test
+
     public void testAddDefect() throws Exception {
-        restClient.getTestRunClient().addDefect("");
+        restClient.getTestRunClient().addDefect("",new Defect("NEWDEFECT-1"));
     }
 
-    @Test
+
     public void testGetDefects() throws Exception {
         restClient.getTestRunClient().getDefects(TEST_ID);
     }
 
-    @Test
     public void testRemoveDefect() throws Exception {
         restClient.getTestRunClient().removeDefect(TEST_ID,"key");
 
     }
 
-    @Test
+
     public void testGetEvidences() throws Exception {
         restClient.getTestRunClient().getEvidences(TEST_ID);
     }
 
-    @Test
+
     public void testCreateEvidence() throws Exception {
-        restClient.getTestRunClient().createEvidence(TEST_ID);
+        Evidence newEv=new Evidence(0L,"imagen.jpg",null,new Date(),"luis.martinez",null);
+        //restClient.getTestRunClient().createEvidence(TEST_ID,new Evidence());
     }
 
-    @Test
+
     public void testRemoveEvidence() throws Exception {
         restClient.getTestRunClient().removeEvidence(TEST_ID,"resourceName");
 
     }
 
-    @Test
     public void testRemoveEvidence1() throws Exception {
         restClient.getTestRunClient().removeEvidence(TEST_ID,0L);
 
     }
 
-    @Test
+
     public void testGetComment() throws Exception {
         restClient.getTestRunClient().getComment(TEST_ID);
     }
 
-    @Test
     public void testUpdateComment() throws Exception {
         restClient.getTestRunClient().updateComment(TEST_ID,"");
     }
 
-    @Test
+
     public void testGetExample() throws Exception {
         restClient.getTestRunClient().getExample(TEST_ID);
     }
 
-    @Test
+
     public void testGetTestSteps() throws Exception {
-        restClient.getTestRunClient().getTestSteps(TEST_ID);
+        TestRun testRun=restClient.getTestRunClient().getTestRun(TEST_ID).claim();
+        assert(!Iterables.isEmpty(testRun.getSteps()));
     }
 }

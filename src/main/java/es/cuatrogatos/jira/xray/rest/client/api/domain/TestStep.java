@@ -123,6 +123,11 @@ public class TestStep extends BasicIssue implements Versionable<TestStep> {
     }
 
     public void setDefects(Iterable<Defect> defects) {
+        try {
+            this.setOldVersion(this.clone());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         this.defects = defects;
     }
 
@@ -158,21 +163,21 @@ public class TestStep extends BasicIssue implements Versionable<TestStep> {
 
         if (this.attachments != null) {
             Collection<Evidence> attachments = new ArrayList<Evidence>();
-            for (Evidence e : myTestStep.getAttachments()) {
+            for (Evidence e : this.getAttachments()) {
                 attachments.add(new Evidence(new Long(e.getId().longValue()), e.getFileName(), e.getFileSize(), (Date) e.getCreated().clone(), e.getAuthor(), e.getFileURL()));
             }
             myTestStep.setAttachments(attachments);
         }
         if (this.evidences != null) {
             Collection<Evidence> evidences = new ArrayList<Evidence>();
-            for (Evidence e : myTestStep.getEvidences()) {
+            for (Evidence e : this.getEvidences()) {
                 evidences.add(new Evidence(new Long(e.getId().longValue()), e.getFileName(), e.getFileSize(), (Date) e.getCreated().clone(), e.getAuthor(), e.getFileURL()));
             }
             myTestStep.setEvidences(evidences);
         }
         if (this.defects != null) {
             Collection<Defect> defects = new ArrayList<Defect>();
-            for (Defect d : myTestStep.getDefects()) {
+            for (Defect d : this.getDefects()) {
                 defects.add(new Defect(d.getSelf(), d.getKey(), d.getId(), d.getSummary(), d.getStatus()));
             }
             myTestStep.setDefects(defects);

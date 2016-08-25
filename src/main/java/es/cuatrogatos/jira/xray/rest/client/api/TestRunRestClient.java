@@ -18,13 +18,13 @@ public interface TestRunRestClient {
     Promise<TestRun.Status> updateStatus(Long testRunId,TestRun.Status statusInput);
     Promise<TestRun.Status> getStatus(String testExecKey,String testKey);
 
-    Promise<Defect> addDefect(String issueKey);
+    Promise<Defect> addDefect(String issueKey,Defect defect);
     Promise<Iterable<Defect>> getDefects(Long testRunId);
     Promise<Void> removeDefect(Long testRunId,String issueKey);
 
 
     Promise<Iterable<Evidence>> getEvidences(Long testRunId);
-    Promise<Evidence> createEvidence(Long testRunId);
+    Promise<Evidence> createEvidence(Long testRunId,Evidence newEvidence);
     Promise<Void> removeEvidence(Long testRunId,String resourceName);
     Promise<Void> removeEvidence(Long testRunId,Long evId);
 

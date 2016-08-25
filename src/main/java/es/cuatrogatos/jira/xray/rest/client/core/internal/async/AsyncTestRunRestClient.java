@@ -25,6 +25,7 @@ import es.cuatrogatos.jira.xray.rest.client.core.internal.json.StatusJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.TestRunJsonParser;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen.TestRunJsonGenerator;
 import es.cuatrogatos.jira.xray.rest.client.core.internal.json.gen.TestRunUpdateJsonGenerator;
+import org.apache.http.entity.mime.content.FileBody;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -92,7 +93,6 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
                 return null;
             }
         });
-
     }
 
     /**
@@ -126,7 +126,9 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
     }
 
     public Promise<TestRun.Status> updateStatus(Long testRunId, TestRun.Status statusInput) {
-        throw new IllegalArgumentException("NOT IMPLEMENTED YET");
+        UriBuilder uriBuilder=UriBuilder.fromUri(baseUri);
+        uriBuilder.path("testrun").path("{id}").path("/status/").queryParam("status",statusInput.name());
+       throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
 
     /**
@@ -142,47 +144,48 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
             }
         });
     }
-
-    public Promise<Defect> addDefect(String issueKey) {
+    //TODO: ADD IMPLEMENTATION
+    public Promise<Defect> addDefect(String issueKey, Defect defect) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
 
+    //TODO: ADD IMPLEMENTATION
     public Promise<Iterable<Defect>> getDefects(Long testRunId) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
+    //TODO: ADD IMPLEMENTATION
     public Promise<Void> removeDefect(Long testRunId, String issueKey) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
+    //TODO: ADD IMPLEMENTATION
     public Promise<Iterable<Evidence>> getEvidences(Long testRunId) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
-    public Promise<Evidence> createEvidence(Long testRunId) {
+    //TODO: ADD IMPLEMENTATION
+    public Promise<Evidence> createEvidence(Long testRunId, Evidence newEvidence) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
+    //TODO: ADD IMPLEMENTATION
     public Promise<Void> removeEvidence(Long testRunId, String resourceName) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
+    //TODO: ADD IMPLEMENTATION
     public Promise<Void> removeEvidence(Long testRunId, Long evId) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
+    //TODO: ADD IMPLEMENTATION
     public Promise<Comment> getComment(Long testRunId) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
+    //TODO: ADD IMPLEMENTATION
     public Promise<Comment> updateComment(Long testRunId, String comment) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
+    //TODO: ADD IMPLEMENTATION
     public Promise<Example> getExample(Long testRunId) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }
-
+    //TODO: ADD IMPLEMENTATION
     public Promise<Iterable<TestStep>> getTestSteps(Long testRunId) {
         throw new IllegalArgumentException("NOT IMPLEMENTED YET");
     }

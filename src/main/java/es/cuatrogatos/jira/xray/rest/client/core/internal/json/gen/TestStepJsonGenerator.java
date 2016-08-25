@@ -21,17 +21,17 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
     private final static RendereableItemJsonGenerator rendereableGenerator=new RendereableItemJsonGenerator();
     private final static DefectJSONGenerator defectsGenerator=new DefectJSONGenerator();
 
-    private final static String KEY_ID="id";
-    private final static String KEY_INDEX="index";
-    private final static String KEY_STEP="step";
-    private final static String KEY_DATA="data";
-    private final static String KEY_RESULT="result";
+    public final static String KEY_ID="id";
+    public final static String KEY_INDEX="index";
+    public final static String KEY_STEP="step";
+    public final static String KEY_DATA="data";
+    public final static String KEY_RESULT="result";
     // UPDATABLE FIELDS
-    private final static String KEY_ATTACHMENTS="attachments";
-    private final static String KEY_EVIDENCES="evidences";
-    private final static String KEY_DEFECTS="defects";
-    private final static String KEY_STATUS="status";
-    private final static String KEY_COMMENT="comment";
+    public final static String KEY_ATTACHMENTS="attachments";
+    public final static String KEY_EVIDENCES="evidences";
+    public final static String KEY_DEFECTS="defects";
+    public final static String KEY_STATUS="status";
+    public final static String KEY_COMMENT="comment";
 
     public JSONObject generate(TestStep testStep) throws JSONException {
         JSONObject ex=new JSONObject();
@@ -54,7 +54,7 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
     }
 
 
-    private JSONObject generateAttachments(TestStep testStep) throws JSONException {
+    protected JSONObject generateAttachments(TestStep testStep) throws JSONException {
         ArrayList<Evidence> removes=new ArrayList<Evidence>();
         ArrayList<Evidence> adds=new ArrayList<Evidence>();
         Iterable<Evidence> all;
@@ -77,8 +77,8 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
                     adds.add(ev);
                 }
             }
-
         }
+
         JSONObject attachments=new JSONObject();
         if(!adds.isEmpty())
             attachments.put("add",new JSONArray(adds));
@@ -88,7 +88,7 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
         return attachments;
     }
 
-    private JSONObject generateEvidences(TestStep testStep) throws JSONException {
+    protected JSONObject generateEvidences(TestStep testStep) throws JSONException {
         ArrayList<Evidence> removes=new ArrayList<Evidence>();
         ArrayList<Evidence> adds=new ArrayList<Evidence>();
 
@@ -123,14 +123,14 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
         return evidences;
     }
 
-    private Object generateDefects (TestStep testStep) throws JSONException{
+    protected Object generateDefects (TestStep testStep) throws JSONException{
         if(testStep.getVersion()!=0)
             return generateDefectsUpdates(testStep);
         else
             return generateDefectsArray(testStep);
     }
 
-    private JSONArray generateDefectsArray(TestStep testStep) throws JSONException {
+    protected JSONArray generateDefectsArray(TestStep testStep) throws JSONException {
         ArrayList<JSONObject> defects=new ArrayList<JSONObject>();
         for(Defect def: testStep.getDefects()){
             defects.add(defectsGenerator.generate(def));
@@ -139,7 +139,7 @@ public class TestStepJsonGenerator  implements JsonGenerator<TestStep> {
     }
 
     //TODO: EXTRACT LOGIC AND CLEAN CODE, IMPLEMENT COMMON CLASSES AND INTERFACES
-    private JSONObject generateDefectsUpdates(TestStep testStep) throws JSONException {
+    protected JSONObject generateDefectsUpdates(TestStep testStep) throws JSONException {
         ArrayList<Defect> removes=new ArrayList<Defect>();
         ArrayList<Defect> adds=new ArrayList<Defect>();
 

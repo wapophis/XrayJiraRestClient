@@ -14,6 +14,7 @@ import java.net.URI;
 public class TestJsonParser implements JsonObjectParser<TestExecution.Test> {
 
         public TestExecution.Test parse(JSONObject json) throws JSONException {
+            json.put("self","");
             URI selfUri = JsonParseUtil.getSelfUri(json);
             String key = json.getString("key");
             Long id = Long.valueOf(json.getLong("id"));

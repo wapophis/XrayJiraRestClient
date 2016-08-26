@@ -1,6 +1,9 @@
 package es.cuatrogatos.jira.xray.rest.client.api.domain;
 
+import com.google.common.collect.Iterables;
+
 import java.net.URI;
+import java.util.ArrayList;
 
 /**
  * Created by lucho on 11/08/16.
@@ -8,35 +11,62 @@ import java.net.URI;
 public class TestExecution extends VersionableIssue<TestExecution> {
     private Iterable<Test> tests;
 
-
     public TestExecution(URI self, String key, Long id) {
         super(self, key, id);
     }
 
     @Override
     public TestExecution clone() throws CloneNotSupportedException {
-        return null;
+        TestExecution myTestExec=new TestExecution(getSelf(),getKey(),getId());
+        if(tests!=null && !Iterables.isEmpty(tests)){
+            ArrayList<Test> myTests=new ArrayList<Test>();
+            for(Test t:tests){
+                myTests.add(t.clone());
+            }
+            myTestExec.tests=myTests;
+        }
+    return myTestExec;
     }
 
-    public Iterable<Test> getTests() {
+    public Iterable<Test> getTests()
+    {
         return tests;
     }
     public void setTests(Iterable<Test> tests) {
+        try {
+            this.setOldVersion(this.clone());
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalArgumentException("CANNOT CLONE THIS OBJECT because of:"+e.getMessage());
+        }
         this.tests = tests;
     }
 
-
-
     public static class Test extends VersionableIssue<Test> {
+        private Integer rank;
+        private TestRun.Status status;
 
         public Test(URI self, String key, Long id) {
             super(self, key, id);
         }
 
+        public Test(URI self,String key,Long id,Integer rank,TestRun.Status status){
+            super(self, key, id);
+            this.status=status;
+            this.rank=rank;
+        }
+
         @Override
         public Test clone() throws CloneNotSupportedException {
-            return null;
-        }
+            Test myTest=new Test(this.getSelf(),this.getKey(),this.getId());
+
+            if(this.rank!=null){
+                myTest.rank=rank;
+            }
+            //TODO: MANAGE ENUMS
+            if(this.status!=null){
+               myTest.status=this.status;
+            }
+        return myTest;}
     }
 
 }

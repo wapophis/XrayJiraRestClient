@@ -18,6 +18,7 @@ public class AsyncXrayJiraRestClient extends AsynchronousJiraRestClient implemen
     public AsyncXrayJiraRestClient(URI serverUri, DisposableHttpClient httpClient) {
         super(serverUri, httpClient);
         this.testRunClient=new AsyncTestRunRestClient(serverUri,httpClient);
+        this.testExecutionClient=new AsyncTestExecRestClient(serverUri,httpClient);
     }
 
     public TestRestClient getTestClient() {

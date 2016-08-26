@@ -100,6 +100,7 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
      * @param testKey Issue jira key for the test.
      * @return a list of XRAY test-runs in which the Test identified by test-key is involved in
      */
+    //TODO: REMOVE THIS METHOD
     public Promise<Iterable<TestRun>> getTestRuns(final String testKey) {
         Promise<SearchResult> searchResultPromise= searchRestClient.searchJql("issue in testTestExecutions(\""+testKey+"\") ");
         return searchResultPromise.map(new Function<SearchResult,Iterable<TestRun>>(){

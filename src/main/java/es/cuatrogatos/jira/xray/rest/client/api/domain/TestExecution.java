@@ -25,4 +25,18 @@ public class TestExecution extends VersionableIssue<TestExecution> {
         this.tests = tests;
     }
 
+
+
+    public static class Test extends VersionableIssue<Test> {
+
+        public Test(URI self, String key, Long id) {
+            super(self, key, id);
+        }
+
+        @Override
+        public Test clone() throws CloneNotSupportedException {
+            return null;
+        }
+    }
+
 }

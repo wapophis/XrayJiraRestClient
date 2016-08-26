@@ -106,7 +106,9 @@ public class AsyncTestRunRestClient extends AbstractAsynchronousRestClient imple
             public Iterable<TestRun> apply(@Nullable SearchResult searchResult) {
                 ArrayList<TestRun> testRunsList=new ArrayList<TestRun>();
                 for(Issue issue: searchResult.getIssues() ){
-                    testRunsList.add(getTestRun(issue.getKey(),testKey).claim());
+                    TestRun testRun=getTestRun(issue.getKey(),testKey).claim();
+                    testRun.setTestExecKey(issue.getKey());
+                    testRunsList.add(testRun);
                 }
                 return testRunsList;
             }

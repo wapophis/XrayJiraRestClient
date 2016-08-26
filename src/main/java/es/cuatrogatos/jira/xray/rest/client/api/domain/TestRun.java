@@ -31,6 +31,8 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
     private String scenario;
     private String scenarioOutline;
 
+    private String testExecKey;
+
 
 
 
@@ -209,6 +211,14 @@ public class TestRun extends BasicIssue implements Versionable<TestRun> {
     protected void resetVersion(){
         this.version=0;
         this.oldVersion=null;
+    }
+
+    public String getTestExecKey() {
+        return testExecKey;
+    }
+
+    public void setTestExecKey(String testExecKey) {
+        this.testExecKey = testExecKey;
     }
 
 
